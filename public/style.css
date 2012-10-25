@@ -1,0 +1,15 @@
+html, body {margin: 0; padding: 0}
+body {background: gray; overflow: hidden}
+
+#canvas {height: 100%; width: 100%; position: relative}
+
+body {padding-right: 202px}
+#sidebar {position: fixed; top: 0; bottom: 0; right: 0; width: 200px; background: white; border-left: black 2px solid}
+
+/* #canvas > .map-canvas > .map-grid > .map-grid-cell */
+
+.map-canvas {/* js sets the size */ position: absolute}
+.map-grid {border: 2px black solid; position: relative; height: 100%; width: 100%}
+.map-grid-cell {border: 1px black solid; position: absolute; z-index: 0; margin: -1px 0 0 -1px}
+
+.current-tool {padding-left: 1em}
