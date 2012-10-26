@@ -2,13 +2,21 @@
 // to do
 //
 // UI:
-// zooming the grid
-// dragging the grid
+// tokens
+// dragging tokens
+// selecting tokens
 // tools, tool selection
 // drawer on the right
-// tokens
-// selecting tokens
-// dragging tokens
+//
+// tools that we need:
+// ruler arrow (toggle enabled/disabled in any mode from the selected token) to show distance
+// constructor mode (add/remove tokens)
+// battle mode (select token to show attack rolls etc)
+// inventory (select token to show items/effects)
+// stats (select token to show drawer with stats and scores)
+//
+// candy:
+// zoom the map around cursor
 
 var DragDrop = function($element) {
 	// handlers
@@ -16,40 +24,44 @@ var DragDrop = function($element) {
 	this.start  = function(dd){};
 	this.stop   = function(dd){};
 
-	// readonly
-	this.startPos   = {x: 0, y: 0};
-	this.currentPos = {x: 0, y: 0};
-
 	var t = this;
 
-	var mup = function(e){
+	var startX = 0;
+	var startY = 0;
+	var currentX = 0;
+	var currentY = 0;
+
+	this.deltaX = function() { return currentX - startX; };
+	this.deltaY = function() { return currentX - startY; };
+
+	var mup = function(e) {
 		// stop tracking
 		$(document)
 			.unbind('mouseup', mup)
 			.unbind('mousemove', mmv);
 
-		t.currentPos.x = e.pageX;
-		t.currentPos.y = e.pageY;
+		currentX = e.pageX;
+		currentY = e.pageY;
 		t.redraw(t);
 		t.stop(t);
 	};
 
-	var mmv = function(e){
-		t.currentPos.x = e.pageX;
-		t.currentPos.y = e.pageY;
+	var mmv = function(e) {
+		currentX = e.pageX;
+		currentY = e.pageY;
 		t.redraw(t);
 	};
 
-	$element.mousedown(function(e){
+	$element.mousedown(function(e) {
 		// start tracking
 		$(document)
 			.bind('mouseup', mup)
 			.bind('mousemove', mmv);
 
-		t.startPos.x = e.pageX;
-		t.startPos.y = e.pageY;
-		t.currentPos.x = e.pageX;
-		t.currentPos.y = e.pageY;
+		startX = e.pageX;
+		startY = e.pageY;
+		currentX = e.pageX;
+		currentY = e.pageY;
 		t.start(t);
 	});
 };
@@ -71,21 +83,21 @@ var Map = function(options) {
 
 	var setupCanvasDragging = function($area, $draggedBox) {
 		var dd = new DragDrop($area);
-		dd.start = function() {
+		dd.start = function(dd) {
 			dd.xTop  = parseInt($draggedBox.css('top'));
 			dd.xLeft = parseInt($draggedBox.css('left'));
 		};
-		dd.redraw = function() {
+		dd.redraw = function(dd) {
 			$draggedBox.css({
-				left: dd.xLeft + this.currentPos.x - this.startPos.x,
-				top:  dd.xTop  + this.currentPos.y - this.startPos.y
+				left: dd.xLeft + dd.deltaX(),
+				top:  dd.xTop  + dd.deltaY()
 			});
 		};
 	};
 
 	this.centerView = function() {
-		var contW = parseInt(this.options.$container.css('width'));
-		var contH = parseInt(this.options.$container.css('height'));
+		var contW = this.options.$container.width();
+		var contH = this.options.$container.height();
 		$canvas.css({
 			left: ((contW - parseInt($canvas.css('width'))) / 2) + 'px',
 			top:  ((contH - parseInt($canvas.css('height'))) / 2) + 'px'
