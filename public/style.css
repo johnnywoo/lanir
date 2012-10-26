@@ -4,12 +4,15 @@ body {background: gray; overflow: hidden}
 #canvas {height: 100%; width: 100%; position: relative}
 
 body {padding-right: 202px}
-#sidebar {position: fixed; top: 0; bottom: 0; right: 0; width: 200px; background: white; border-left: black 2px solid}
+#sidebar {position: fixed; top: 0; bottom: 0; right: 0; width: 200px; background: white; border-left: black 2px solid; z-index: 100;}
 
 /* #canvas > .map-canvas > .map-grid > .map-grid-cell */
 
-.map-canvas {/* js sets the size */ position: absolute}
-.map-grid {border: 2px black solid; position: relative; height: 100%; width: 100%}
-.map-grid-cell {border: 1px black solid; position: absolute; z-index: 0; margin: -1px 0 0 -1px}
+/* 1em is a cell size */
+.map-canvas {/* js sets the size in `em`, font-size here acts az a zoom level */ position: absolute; font-size: 30px; border: 2px black solid;}
+.map-grid {position: relative; height: 100%; width: 100%;}
+.map-grid-cell {border: 1px black solid; position: absolute; z-index: 0; width: 1em; height: 1em; border-width: 1px 0 0 1px;}
+.map-grid-cell:hover {background: gold; opacity: 0.4}
 
-.current-tool {padding-left: 1em}
+
+.map-canvas {background: url("images/cemetery.jpg") top left no-repeat; background-size: 23em 19em}

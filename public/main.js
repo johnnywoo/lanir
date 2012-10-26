@@ -57,13 +57,17 @@ var DragDrop = function($element) {
 var Map = function(options) {
 	this.options = {
 		$container: null,
-		size:       [20, 15], // cells [horizontal, vertical]
-		cellWidth:  35, // px
-		cellHeight: 35 // px
+		size:       [23, 19] // cells [horizontal, vertical]
 	};
 	$.extend(this.options, options || {});
 
 	var $canvas; // the whole map
+
+
+
+	//
+	// DRAGGING
+	//
 
 	var setupCanvasDragging = function($area, $draggedBox) {
 		var dd = new DragDrop($area);
@@ -79,22 +83,6 @@ var Map = function(options) {
 		};
 	};
 
-	var setupCanvasZooming = function($area, $zoomedBox) {
-		$area.mousewheel(function(event, delta, deltaX, deltaY) {
-			// delta will be 0.3
-			var curZoom = parseFloat($zoomedBox.css('-moz-transform').replace(/^.*?\(([0-9.]+).*?$/, '$1'));
-			if(isNaN(curZoom)) {
-				curZoom = 1;
-			}
-			var zoom = curZoom + delta / 5;
-			$canvas.css({
-				'zoom':              zoom,
-				'-moz-transform':    'scale('+zoom+')',
-				'-webkit-transform': 'scale('+zoom+')'
-			});
-		});
-	};
-
 	this.centerView = function() {
 		var contW = parseInt(this.options.$container.css('width'));
 		var contH = parseInt(this.options.$container.css('height'));
@@ -102,13 +90,42 @@ var Map = function(options) {
 			left: ((contW - parseInt($canvas.css('width'))) / 2) + 'px',
 			top:  ((contH - parseInt($canvas.css('height'))) / 2) + 'px'
 		});
-		// remove zoom
-		$canvas.css({
-			'zoom':              '1',
-			'-moz-transform':    'scale(1)',
-			'-webkit-transform': 'scale(1)'
+	};
+
+
+
+	//
+	// ZOOM
+	//
+
+	var defaultZoomAmount = null;
+	var zoomDelta = null;
+	var setupCanvasZooming = function($area, $zoomedBox) {
+		$area.mousewheel(function(event, delta, deltaX, deltaY) {
+			// delta will be 0.3
+			var curZoom = parseInt($zoomedBox.css('font-size')) || 30; // arbitrary default fallback, sue me
+			if(defaultZoomAmount == null) {
+				defaultZoomAmount = curZoom;
+				// unfortunately, simple percentage zoom will cause uneven zooming
+				// (zoom in + zoom out = not the size we started with)
+				// so we need to calculate a step value once and use it to zoom in a linear fashion
+				zoomDelta = Math.round(defaultZoomAmount * 0.05); // 5 percent per tick
+			}
+			var zoom = curZoom + zoomDelta * Math.round(delta * 3);
+			$zoomedBox.css('font-size', zoom + 'px');
 		});
 	};
+	this.removeZoom = function() {
+		if(defaultZoomAmount != null) {
+			$canvas.css('font-size', defaultZoomAmount + 'px');
+		}
+	};
+
+
+
+	//
+	// DRAW
+	//
 
 	this.draw = function() {
 		if(this.options.$container == null) {
@@ -124,8 +141,8 @@ var Map = function(options) {
 		// ok, let's start filling it with a wrapper
 		$canvas = $('<div class="map-canvas" />');
 		$canvas.css({
-			width:  this.options.cellWidth * gridW,
-			height: this.options.cellHeight * gridH
+			width:  gridW + 'em',
+			height: gridH + 'em'
 		});
 		$e.append($canvas);
 
@@ -138,10 +155,8 @@ var Map = function(options) {
 			for(var h = 0; h < gridH; h++) {
 				var $cell = $('<div class="map-grid-cell" />');
 				$cell.css({
-					top:    (this.options.cellHeight * h) + 'px',
-					left:   (this.options.cellWidth * w) + 'px',
-					width:  this.options.cellWidth,
-					height: this.options.cellHeight
+					top:  h + 'em',
+					left: w + 'em'
 				});
 				$grid.append($cell);
 			}
@@ -163,10 +178,17 @@ $(function(){
 	});
 
 	map.draw();
+	map.removeZoom();
 	map.centerView();
 
 	$('#centerViewBtn').click(function(){
+		map.removeZoom();
 		map.centerView();
-	})
+	});
+
+	$(document).bind('keydown', 'ctrl+0 meta+0', function() {
+		map.removeZoom();
+		map.centerView();
+	});
 });
 
