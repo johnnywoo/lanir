@@ -9,7 +9,7 @@ body {padding-right: 202px}
 /* #canvas > .map-canvas > .map-grid > .map-grid-cell */
 
 /* 1em is a cell size */
-.map-canvas {/* js sets the size in `em`, font-size here acts az a zoom level */ position: absolute; font-size: 30px; border: 2px black solid;}
+.map-canvas {/* js sets the size in `em`, font-size here acts az a zoom level */ position: absolute; font-size: 42px; border: 2px black solid;}
 .map-grid {position: relative; height: 100%; width: 100%;}
 .map-grid-cell {border: 1px black solid; position: absolute; z-index: 0; width: 1em; height: 1em; border-width: 1px 0 0 1px;}
 
@@ -21,4 +21,3 @@ body {padding-right: 202px}
  */
 
 
-.map-canvas {background: url("images/cemetery.jpg") top left no-repeat; background-size: 23em 19em}
