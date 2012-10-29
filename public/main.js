@@ -17,6 +17,7 @@
 
 // candy:
 // when moving a token, show path and step count
+// minimum zoom out
 
 // log of actions and undo
 

@@ -25,8 +25,12 @@ var DragDrop = function($element, options) {
 	// PUBLIC INTERFACE
 	//
 
-	this.deltaX = function() { return t.currentX - t.startX; };
-	this.deltaY = function() { return t.currentY - t.startY; };
+	this.deltaX = function() {
+		return t.currentX - t.startX;
+	};
+	this.deltaY = function() {
+		return t.currentY - t.startY;
+	};
 
 
 

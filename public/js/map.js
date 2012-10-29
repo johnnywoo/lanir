@@ -20,9 +20,22 @@ var Map = function(options) {
 	//
 
 	this.removeZoom  = function() {removeZoom();};
+
 	this.centerView  = function() {centerView();};
+
+	/**
+	 * @param {Token} token
+	 */
 	this.addToken    = function(token) {addToken(token);};
+
+	/**
+	 * @param {number} id
+	 */
 	this.drawToken   = function(id) {drawToken(id);};
+
+	/**
+	 * @param {number} id
+	 */
 	this.removeToken = function(id) {removeToken(id);};
 
 
