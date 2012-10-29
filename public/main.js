@@ -14,9 +14,6 @@
 // battle mode (select token to show attack rolls etc)
 // inventory (select token to show items/effects)
 // stats (select token to show drawer with stats and scores)
-//
-// candy:
-// zoom the map around cursor
 
 
 // effects have defining properties

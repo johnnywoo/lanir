@@ -84,7 +84,8 @@ var Map = function(options) {
 	$canvas.append($tokenLayer);
 
 
-	// DRAGGING
+	// PANNING THE MAP
+
 	new DragDrop(this.$container, {
 		start: function(dd) {
 			var offset = $canvas.offset();
@@ -102,8 +103,15 @@ var Map = function(options) {
 		var contW = t.$container.width();
 		var contH = t.$container.height();
 		$canvas.css({
-			left: ((contW - parseInt($canvas.css('width'))) / 2) + 'px',
-			top:  ((contH - parseInt($canvas.css('height'))) / 2) + 'px'
+			left: ((contW - $canvas.width()) / 2) + 'px',
+			top:  ((contH - $canvas.height()) / 2) + 'px'
+		});
+	};
+	var moveCanvas = function(moveX, moveY) {
+		var offset = $canvas.offset();
+		$canvas.css({
+			left: (offset.left + Math.round(moveX)) + 'px',
+			top:  (offset.top  + Math.round(moveY)) + 'px'
 		});
 	};
 
@@ -140,8 +148,26 @@ var Map = function(options) {
 			zoomDelta = Math.round(defaultZoomAmount * 0.05); // 5 percent per tick
 		}
 		var zoom = curZoom + zoomDelta * Math.round(delta * 3);
+
 		$canvas.css('font-size', zoom + 'px');
 		syncZoomClass();
+
+		// now we need to compensate canvas coords so the zoom doesn't shift the viewport
+		// what we have here is:
+		// size changed from oldW to newW
+		// coord of point under cursor shifts from X to `X * newW / oldW` where X is coords on canvas
+		// pointer has pageX relative to the page, canvas has offsetX relative to the page
+		// therefore `X = pageX - offsetX` and new coord of the point is `(pageX - offsetX) * newW / oldW`
+		// we can substitute `newW/oldW` with `zoom/curZoom` because font size is proportional to the width
+		// new offset will then be `pageX - (zoom/curZoom) * (pageX - offsetX)`
+		// the final formula reads:
+		// shiftX = (1 - zoom/curZoom) * (pageX - offsetX)
+		var k = 1 - zoom / curZoom;
+		var offset = $canvas.offset();
+		moveCanvas(
+			Math.round(k * (e.pageX - offset.left)),
+			Math.round(k * (e.pageY - offset.top))
+		)
 	});
 	removeZoom = function() {
 		if(defaultZoomAmount != null) {
