@@ -10,6 +10,7 @@ var Map = function(options) {
 		[50,  'map-zoom-in'],
 		[100, 'map-zoom-microscope']
 	];
+	this.zoomSpeed = 0.15; // 0.15 is 15% of width/height increase per mouse wheel tick
 	$.extend(this, options || {});
 
 
@@ -138,15 +139,15 @@ var Map = function(options) {
 	// sync it on init
 	syncZoomClass();
 	this.$container.mousewheel(function(e, delta) {
-		// delta will be 0.3 * n where n is a signed int
 		var curZoom = parseInt($canvas.css('font-size')) || 42; // arbitrary default fallback, sue me
 		if(defaultZoomAmount == null) {
 			defaultZoomAmount = curZoom;
 			// unfortunately, simple percentage zoom will cause uneven zooming
 			// (zoom in + zoom out = not the size we started with)
 			// so we need to calculate a step value once and use it to zoom in a linear fashion
-			zoomDelta = Math.round(defaultZoomAmount * 0.05); // 5 percent per tick
+			zoomDelta = Math.round(defaultZoomAmount * t.zoomSpeed);
 		}
+		// delta will be 0.3 * n where n is a signed int
 		var zoom = curZoom + zoomDelta * Math.round(delta * 3);
 
 		$canvas.css('font-size', zoom + 'px');
