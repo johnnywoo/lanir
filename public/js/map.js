@@ -19,7 +19,6 @@ var Map = function(options) {
 	// PUBLIC INTERFACE
 	//
 
-	var removeZoom, centerView, addToken, drawToken, removeToken;
 	this.removeZoom  = function() {removeZoom();};
 	this.centerView  = function() {centerView();};
 	this.addToken    = function(token) {addToken(token);};
@@ -64,30 +63,46 @@ var Map = function(options) {
 	}
 	$e.append($canvas);
 
-	// map layers... maybe later
-
-	// the last and foremost is the grid layer
+	// the grid layer
 	var $grid = $('<div class="map-grid" />');
 	// filling the grid with squares
 	for(var w = 0; w < gridW; w++) {
 		for(var h = 0; h < gridH; h++) {
 			var $cell = $('<div class="map-grid-cell" />');
-			$cell.css({
-				top:  h + 'em',
-				left: w + 'em'
-			});
+			$cell
+				.css({
+					top:  h + 'em',
+					left: w + 'em'
+				})
+				.attr('lanir-cell-x', w)
+				.attr('lanir-cell-y', h);
 			$grid.append($cell);
 		}
 	}
 	$canvas.append($grid);
 
+	// here is where the tokens go
 	var $tokenLayer = $('<div class="tokens" />');
 	$canvas.append($tokenLayer);
+
+	var getCellCoordsFromPoint = function(x, y, correctionShift) {
+		correctionShift = correctionShift || [0, 0];
+		$tokenLayer.hide();
+		var $cell = $(document.elementFromPoint(x, y));
+		$tokenLayer.show();
+
+		return [
+			parseInt($cell.attr('lanir-cell-x')) + correctionShift[0],
+			parseInt($cell.attr('lanir-cell-y')) + correctionShift[1]
+		];
+	};
+
 
 
 	// PANNING THE MAP
 
 	new DragDrop(this.$container, {
+		ignoreCancel: true,
 		start: function(dd) {
 			var offset = $canvas.offset();
 			dd.xTop  = offset.top;
@@ -100,7 +115,7 @@ var Map = function(options) {
 			});
 		}
 	});
-	centerView = function() {
+	var centerView = function() {
 		var contW = t.$container.width();
 		var contH = t.$container.height();
 		$canvas.css({
@@ -120,7 +135,7 @@ var Map = function(options) {
 	// ZOOM
 
 	var defaultZoomAmount = null;
-	var zoomDelta = null;
+	var zoomStep = null;
 	var syncZoomClass = function() {
 		var pixels = $grid.children(":first").width();
 		var classes = [];
@@ -145,10 +160,10 @@ var Map = function(options) {
 			// unfortunately, simple percentage zoom will cause uneven zooming
 			// (zoom in + zoom out = not the size we started with)
 			// so we need to calculate a step value once and use it to zoom in a linear fashion
-			zoomDelta = Math.round(defaultZoomAmount * t.zoomSpeed);
+			zoomStep = Math.round(defaultZoomAmount * t.zoomSpeed);
 		}
 		// delta will be 0.3 * n where n is a signed int
-		var zoom = curZoom + zoomDelta * Math.round(delta * 3);
+		var zoom = curZoom + Math.round(zoomStep * delta * 3);
 
 		$canvas.css('font-size', zoom + 'px');
 		syncZoomClass();
@@ -168,9 +183,9 @@ var Map = function(options) {
 		moveCanvas(
 			Math.round(k * (e.pageX - offset.left)),
 			Math.round(k * (e.pageY - offset.top))
-		)
+		);
 	});
-	removeZoom = function() {
+	var removeZoom = function() {
 		if(defaultZoomAmount != null) {
 			$canvas.css('font-size', defaultZoomAmount + 'px');
 			syncZoomClass();
@@ -182,7 +197,7 @@ var Map = function(options) {
 
 	var tokens = [];
 	var tokenBoxes = []; // list of jQuery objects
-	drawToken = function(id) {
+	var drawToken = function(id) {
 		// removing the old box
 		if(tokenBoxes[id]) {
 			tokenBoxes[id].remove();
@@ -203,13 +218,35 @@ var Map = function(options) {
 			top:    token.place[1] + 'em'
 		});
 		$tokenLayer.append($box);
+		tokenBoxes[id] = $box;
+
+		// dragging the token around
+		new DragDrop($box, {
+			start: function(dd) {
+				dd.xStartPlace = token.place.slice(0); // clone the array
+				// we might have grabbed the token not by its top left corner, so let's adjust for it
+				var grabPlace = getCellCoordsFromPoint(dd.currentX, dd.currentY);
+				dd.xCorrectionShift = [
+					token.place[0] - grabPlace[0],
+					token.place[1] - grabPlace[1]
+				];
+			},
+			redraw: function(dd) {
+				token.place = getCellCoordsFromPoint(dd.currentX, dd.currentY, dd.xCorrectionShift);
+				token.redraw();
+			},
+			cancel: function(dd) {
+				token.place = dd.xStartPlace;
+				token.redraw();
+			}
+		});
 	};
-	addToken = function(token) {
+	var addToken = function(token) {
 		token.map = t;
 		token.mapId = -1 + tokens.push(token);
 		drawToken(token.mapId);
 	};
-	removeToken = function(id) {
+	var removeToken = function(id) {
 		if(tokens[id] != undefined) {
 			// detach it from the map
 			tokens[id].map   = null;

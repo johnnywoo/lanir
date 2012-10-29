@@ -2,8 +2,8 @@
 // to do
 //
 // UI:
-// tokens
-// dragging tokens
+// multiple tokens on the same square
+// token library, creating new tokens from it
 // selecting tokens
 // tools, tool selection
 // drawer on the right
@@ -14,6 +14,11 @@
 // battle mode (select token to show attack rolls etc)
 // inventory (select token to show items/effects)
 // stats (select token to show drawer with stats and scores)
+
+// candy:
+// when moving a token, show path and step count
+
+// log of actions and undo
 
 
 // effects have defining properties
@@ -40,7 +45,8 @@ function createTokens(map) {
 		place: [9,10]
 	}));
 	map.addToken(new Token({
-		name: 'Big statue',
+		name: 'Big Nathan',
+		image: 'images/token-nathan.jpg',
 		size: [2,2],
 		place: [6,9]
 	}));
@@ -48,11 +54,6 @@ function createTokens(map) {
 		name: 'Oval statue',
 		size: [3,1],
 		place: [6,7]
-	}));
-	map.addToken(new Token({
-		name: 'Huge statue',
-		size: [7,7],
-		place: [12,8]
 	}));
 }
 

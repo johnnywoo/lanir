@@ -20,6 +20,9 @@ var Token = function(options) {
 	this.remove = function() {
 		this.map.removeToken(this.mapId);
 	};
+	this.redraw = function() {
+		this.map.drawToken(this.mapId);
+	};
 	this.render = function() {
 		var $box;
 		if(this.image != '') {

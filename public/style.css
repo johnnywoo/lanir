@@ -4,7 +4,7 @@ body {background: gray; overflow: hidden}
 #canvas {height: 100%; width: 100%; position: relative}
 
 body {padding-right: 202px}
-#sidebar {position: fixed; top: 0; bottom: 0; right: 0; width: 200px; background: white; border-left: black 2px solid; z-index: 100;}
+#sidebar {position: fixed; top: 0; bottom: 0; right: 0; width: 200px; background: white; border-left: black 2px solid; z-index: 100; -moz-box-sizing: border-box; padding: 0 0.3em}
 
 /* #canvas > .map-canvas > .map-grid > .map-grid-cell */
 
@@ -13,7 +13,7 @@ body {padding-right: 202px}
 .map-grid {position: absolute; height: 100%; width: 100%;}
 .map-grid-cell {border: 1px black solid; position: absolute; width: 1em; height: 1em; border-width: 1px 0 0 1px;}
 
-.map-grid-cell:hover {background: gold; opacity: 0.4}
+/* .map-grid-cell:hover {background: red; opacity: 0.4} hover won't work because we have token layer above the grid */
 /* we can make the border glow properly by trickery:
  * half of the border must be on the outside (border-color)
  * and other half on the inside (background, inner block, etc)
@@ -29,9 +29,22 @@ body {padding-right: 202px}
 .tokens {position: absolute; height: 100%; width: 100%;}
 .token {position: absolute}
 
-.token-text-body, .token-image-body {-moz-box-sizing: border-box; height: 100%; width: 100%; font-size: 80%; text-align: center; vertical-align: middle; border-radius: 50%; border: 0.1em silver solid; font-family: serif}
+.token-text-body, .token-image-body {-moz-box-sizing: border-box; height: 100%; width: 100%; font-size: 80%; text-align: center; vertical-align: middle; border-radius: 50%; border: 0.1em silver solid; font-family: serif; cursor: default}
 .token-image-body {}
 .token-name {font-size: 0.2em; position: absolute; bottom: 0; left: 0; right: 0}
 	.token-name span {background: ivory; border: 1px gray solid; border-radius: 0.35em; color: black; padding: 0 0.3em; font-family: sans-serif}
 .map-zoom-out .token-name {display: none}
 .map-zoom-microscope .token-name {font-size: 0.15em}
+
+
+
+
+.map-canvas * {
+   -moz-user-select: -moz-none;
+   -khtml-user-select: none;
+   -webkit-user-select: none;
+}
+
+
+.keyboard-shortcut {border: 1px silver solid; border-radius: 15%; background: ivory; padding: 0 0.1em; cursor: pointer}
+	.keyboard-shortcut:hover {background: #e8e8db}
