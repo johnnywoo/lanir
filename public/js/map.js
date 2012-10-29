@@ -1,7 +1,15 @@
 var Map = function(options) {
 	this.$container = null;
-	this.size =       [25, 20]; // cells [horizontal, vertical]
-	this.mapImage =   '';
+	this.size       = [25, 20]; // cells [horizontal, vertical]
+	this.mapImage   = '';
+
+	this.zoomLevels = [
+		// cell size in pixels: canvas class
+		// the array needs to be sorted!
+		[0,   'map-zoom-out'],
+		[50,  'map-zoom-in'],
+		[100, 'map-zoom-microscope']
+	];
 	$.extend(this, options || {});
 
 
@@ -9,9 +17,13 @@ var Map = function(options) {
 	//
 	// PUBLIC INTERFACE
 	//
-	var removeZoom, centerView;
-	this.removeZoom = function() {removeZoom();};
-	this.centerView = function() {centerView();};
+
+	var removeZoom, centerView, addToken, drawToken, removeToken;
+	this.removeZoom  = function() {removeZoom();};
+	this.centerView  = function() {centerView();};
+	this.addToken    = function(token) {addToken(token);};
+	this.drawToken   = function(id) {drawToken(id);};
+	this.removeToken = function(id) {removeToken(id);};
 
 
 
@@ -68,7 +80,8 @@ var Map = function(options) {
 	}
 	$canvas.append($grid);
 
-	// tokens over the grid... maybe later
+	var $tokenLayer = $('<div class="tokens" />');
+	$canvas.append($tokenLayer);
 
 
 	// DRAGGING
@@ -99,6 +112,23 @@ var Map = function(options) {
 
 	var defaultZoomAmount = null;
 	var zoomDelta = null;
+	var syncZoomClass = function() {
+		var pixels = $grid.children(":first").width();
+		var classes = [];
+		var foundClass = '';
+		for(var i = 0; i < t.zoomLevels.length; i++) {
+			var zoomLevel = t.zoomLevels[i]; // [pixels, class]
+			classes.push(zoomLevel[1]);
+			if(pixels > zoomLevel[0]) {
+				foundClass = zoomLevel[1];
+			}
+		}
+		if(!$canvas.hasClass(foundClass)) {
+			$canvas.removeClass(classes.join(' ')).addClass(foundClass);
+		}
+	};
+	// sync it on init
+	syncZoomClass();
 	this.$container.mousewheel(function(e, delta) {
 		// delta will be 0.3 * n where n is a signed int
 		var curZoom = parseInt($canvas.css('font-size')) || 42; // arbitrary default fallback, sue me
@@ -111,10 +141,54 @@ var Map = function(options) {
 		}
 		var zoom = curZoom + zoomDelta * Math.round(delta * 3);
 		$canvas.css('font-size', zoom + 'px');
+		syncZoomClass();
 	});
 	removeZoom = function() {
 		if(defaultZoomAmount != null) {
 			$canvas.css('font-size', defaultZoomAmount + 'px');
+			syncZoomClass();
 		}
 	};
+
+
+	// TOKENS
+
+	var tokens = [];
+	var tokenBoxes = []; // list of jQuery objects
+	drawToken = function(id) {
+		// removing the old box
+		if(tokenBoxes[id]) {
+			tokenBoxes[id].remove();
+			delete tokenBoxes[id];
+		}
+		if(tokens[id] == undefined) {
+			return;
+		}
+
+		// drawing the new box
+		var token = tokens[id];
+		var $box = $('<div class="token" />');
+		$box.append(token.render());
+		$box.css({
+			width:  token.size[0] + 'em',
+			height: token.size[1] + 'em',
+			left:   token.place[0] + 'em',
+			top:    token.place[1] + 'em'
+		});
+		$tokenLayer.append($box);
+	};
+	addToken = function(token) {
+		token.map = t;
+		token.mapId = -1 + tokens.push(token);
+		drawToken(token.mapId);
+	};
+	removeToken = function(id) {
+		if(tokens[id] != undefined) {
+			// detach it from the map
+			tokens[id].map   = null;
+			tokens[id].mapId = null;
+		}
+		delete tokens[id];
+		drawToken(id); // will remove the token box
+	}
 };
