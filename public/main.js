@@ -21,6 +21,9 @@
 
 // log of actions and undo
 
+// player mode (no sidebar)
+// ipad support for player mode
+
 
 // effects have defining properties
 // target: owner, character, blast (size, from owner/place)
