@@ -23,6 +23,9 @@ var Token = function(options) {
 	this.redraw = function() {
 		this.map.drawToken(this.mapId);
 	};
+	this.move = function(place) {
+		this.map.moveToken(this.mapId, place);
+	};
 	this.render = function() {
 		var $box;
 		if(this.image != '') {

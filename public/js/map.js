@@ -19,19 +19,25 @@ var Map = function(options) {
 	// PUBLIC INTERFACE
 	//
 
-	this.removeZoom  = function() {removeZoom();};
+	this.removeZoom = function() {removeZoom();};
 
-	this.centerView  = function() {centerView();};
+	this.centerView = function() {centerView();};
 
 	/**
 	 * @param {Token} token
 	 */
-	this.addToken    = function(token) {addToken(token);};
+	this.addToken = function(token) {addToken(token);};
 
 	/**
 	 * @param {number} id
 	 */
-	this.drawToken   = function(id) {drawToken(id);};
+	this.drawToken = function(id) {drawToken(id);};
+
+	/**
+	 * @param {number} id
+	 * @param {Array.<number>} place
+	 */
+	this.moveToken = function(id, place) {moveToken(id, place);};
 
 	/**
 	 * @param {number} id
@@ -116,6 +122,7 @@ var Map = function(options) {
 
 	new DragDrop(this.$container, {
 		ignoreCancel: true,
+		mouseButtons: [DragDrop.BTN_LEFT, DragDrop.BTN_MIDDLE],
 		start: function(dd) {
 			var offset = $canvas.offset();
 			dd.xTop  = offset.top;
@@ -237,22 +244,63 @@ var Map = function(options) {
 		new DragDrop($box, {
 			start: function(dd) {
 				dd.xStartPlace = token.place.slice(0); // clone the array
+				dd.xLastPlace  = token.place.slice(0); // clone the array
 				// we might have grabbed the token not by its top left corner, so let's adjust for it
 				var grabPlace = getCellCoordsFromPoint(dd.currentX, dd.currentY);
 				dd.xCorrectionShift = [
 					token.place[0] - grabPlace[0],
 					token.place[1] - grabPlace[1]
 				];
+				var arrow = new ShapeArrow();
+				arrow.start(dd.xStartPlace);
+				dd.xArrow = arrow;
+			},
+			otherclick: function(dd) {
+				var place = getCellCoordsFromPoint(dd.currentX, dd.currentY, dd.xCorrectionShift);
+				dd.xArrow.point(place);
 			},
 			redraw: function(dd) {
-				token.place = getCellCoordsFromPoint(dd.currentX, dd.currentY, dd.xCorrectionShift);
-				token.redraw();
+				var place = getCellCoordsFromPoint(dd.currentX, dd.currentY, dd.xCorrectionShift);
+				if(place[0] != dd.xLastPlace[0] || place[1] != dd.xLastPlace[1]) {
+					dd.xLastPlace = place.slice(0); // clone the array
+
+					// adjust the arrow
+					dd.xArrow.end(place);
+
+					// redraw the arrow
+					if(dd.x$arrowBox) {
+						dd.x$arrowBox.remove();
+					}
+					dd.x$arrowBox = dd.xArrow.draw();
+					$tokenLayer.append(dd.x$arrowBox);
+
+					// we cannot redraw here!
+					// on redraw the DragDrop object will be recreated with the token
+					// and the whole thing explodes with weird effects
+					token.move(place);
+				}
 			},
 			cancel: function(dd) {
-				token.place = dd.xStartPlace;
-				token.redraw();
+				dd.stop(dd);
+				token.move(dd.xStartPlace);
+			},
+			stop: function(dd) {
+				if(dd.x$arrowBox) {
+					dd.x$arrowBox.remove();
+				}
 			}
 		});
+	};
+	var moveToken = function(id, place) {
+		if(tokens[id]) {
+			tokens[id].place = place;
+		}
+		if(tokenBoxes[id]) {
+			tokenBoxes[id].css({
+				left:   place[0] + 'em',
+				top:    place[1] + 'em'
+			});
+		}
 	};
 	var addToken = function(token) {
 		token.map = t;

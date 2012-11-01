@@ -21,6 +21,19 @@ body {padding-right: 202px}
  */
 
 
+/*
+z-index levels:
+0 = map
+5 = interface shapes underneath tokens (e.g. movement arrow)
+10..49 = tokens
+50 = interface shapes over tokens
+100 = sidebar
+*/
+.map-grid {z-index: 0}
+.under-tokens {z-index: 5}
+.token {z-index: 10}
+.over-tokens {z-index: 50}
+
 /* zoom levels (applied to .map-canvas) */
 .map-zoom-out {}
 .map-zoom-in {}
