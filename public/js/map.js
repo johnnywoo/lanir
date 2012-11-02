@@ -5,7 +5,7 @@ var Map = function(options) {
 
 	this.zoomLevels = [
 		// cell size in pixels: canvas class
-		// the array needs to be sorted!
+		// the array must be sorted!
 		[0,   'map-zoom-out'],
 		[50,  'map-zoom-in'],
 		[100, 'map-zoom-microscope']
@@ -83,38 +83,20 @@ var Map = function(options) {
 	$e.append($canvas);
 
 	// the grid layer
-	var $grid = $('<div class="map-grid" />');
-	// filling the grid with squares
-	for(var w = 0; w < gridW; w++) {
-		for(var h = 0; h < gridH; h++) {
-			var $cell = $('<div class="map-grid-cell" />');
-			$cell
-				.css({
-					top:  h + 'em',
-					left: w + 'em'
-				})
-				.attr('lanir-cell-x', w)
-				.attr('lanir-cell-y', h);
-			$grid.append($cell);
-		}
-	}
-	$canvas.append($grid);
+	var grid = new MapGrid(gridW, gridH);
+	$canvas.append(grid.draw());
+	var getCellCoordsFromPoint = function(x, y, correctionShift) {
+		correctionShift = correctionShift || [0, 0];
+		var place = grid.getCellCoordsFromPoint(x, y);
+		return [
+			place[0] + correctionShift[0],
+			place[1] + correctionShift[1]
+		];
+	};
 
 	// here is where the tokens go
 	var $tokenLayer = $('<div class="tokens" />');
 	$canvas.append($tokenLayer);
-
-	var getCellCoordsFromPoint = function(x, y, correctionShift) {
-		correctionShift = correctionShift || [0, 0];
-		$tokenLayer.hide();
-		var $cell = $(document.elementFromPoint(x, y));
-		$tokenLayer.show();
-
-		return [
-			parseInt($cell.attr('lanir-cell-x')) + correctionShift[0],
-			parseInt($cell.attr('lanir-cell-y')) + correctionShift[1]
-		];
-	};
 
 
 
@@ -157,7 +139,7 @@ var Map = function(options) {
 	var defaultZoomAmount = null;
 	var zoomStep = null;
 	var syncZoomClass = function() {
-		var pixels = $grid.children(":first").width();
+		var pixels = grid.getCellWidth();
 		var classes = [];
 		var foundClass = '';
 		for(var i = 0; i < t.zoomLevels.length; i++) {

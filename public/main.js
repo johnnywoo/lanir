@@ -16,7 +16,8 @@
 // stats (select token to show drawer with stats and scores)
 
 // candy:
-// when moving a token, show path and step count
+// when moving a token, show step count
+// when moving a big token, the arrow should be positioned relative to its center
 // minimum zoom out
 
 // log of actions and undo
