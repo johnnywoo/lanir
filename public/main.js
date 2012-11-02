@@ -23,8 +23,8 @@
 // ipad support for player mode
 
 // dealing with multiple tokens on the same square:
-// right click should make a context menu with all tokens there,
-// click one to move it to top
+// mark such squares with some icon (how do we deal with big tokens?)
+// have a keyboard shortcut to cycle between tokens under cursor
 
 // log of actions and undo
 
