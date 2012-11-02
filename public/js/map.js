@@ -216,7 +216,8 @@ var Map = function(options) {
 				var arrow = new ShapeArrow();
 				arrow.start(dd.xStartPlace);
 				dd.xArrow = arrow;
-				token.set({counter: dd.xArrow.getLength()});
+
+				token.$box.css({'z-index': maxZIndex + 1});
 			},
 			otherclick: function(dd) {
 				var place = getCellCoordsFromPoint(dd.currentX, dd.currentY, dd.xCorrectionShift);
@@ -249,6 +250,7 @@ var Map = function(options) {
 			stop: function(dd) {
 				dd.x$arrowBox && dd.x$arrowBox.remove();
 				token.set({counter: ''});
+				normalizeTokenZIndices();
 			}
 		});
 
@@ -259,5 +261,22 @@ var Map = function(options) {
 			tokens[id].destroy();
 		}
 		delete tokens[id];
+	};
+	var zeroZIndex = 10;
+	var maxZIndex = zeroZIndex;
+	var normalizeTokenZIndices = function() {
+		var list = [];
+		$.each(tokens, function(id, token) {
+			list.push([
+				token.$box.css('z-index'),
+				token
+			]);
+		});
+		// sort by z-index asc
+		list.sort(function(a, b) {return a[0] - b[0]});
+		for(var i = 0; i < list.length; i++) {
+			list[i][1].$box.css('z-index', zeroZIndex + i);
+		}
+		maxZIndex = zeroZIndex + i;
 	};
 };
