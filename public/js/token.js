@@ -4,12 +4,22 @@ var Token = function(options) {
 	this.place = [0, 0]; // coords of left top square of the token
 	this.image = '';
 	this.name  = '';
+	this.text  = '';
 	this.color = '#004108';
 
 	// filled by the map
-	this.map   = null;
 	this.mapId = null;
+
 	$.extend(this, options || {});
+
+
+	this.$box = $('<div class="token" />');
+	this.$box.css({
+		width:  this.size[0] + 'em',
+		height: this.size[1] + 'em',
+		left:   this.place[0] + 'em',
+		top:    this.place[1] + 'em'
+	});
 
 
 
@@ -17,14 +27,12 @@ var Token = function(options) {
 	// PUBLIC INTERFACE
 	//
 
-	this.remove = function() {
-		this.map.removeToken(this.mapId);
-	};
-	this.redraw = function() {
-		this.map.drawToken(this.mapId);
-	};
 	this.move = function(place) {
-		this.map.moveToken(this.mapId, place);
+		this.place = place;
+		this.$box.css({
+			left:   place[0] + 'em',
+			top:    place[1] + 'em'
+		});
 	};
 	this.render = function() {
 		var $box;
@@ -36,12 +44,18 @@ var Token = function(options) {
 		} else {
 			// text-based token
 			$box = $('<div class="token-text-body" />');
-			$box.text(this.name.substring(0, 1));
+			$box.text(this.text || this.name.substring(0, 1));
 			$box.css('background-color', this.color);
 			$box.css('color', 'white');
 		}
 
-		$box.append($('<span class="token-name" />').append($('<span />').text(this.name)));
-		return $box;
+		if(this.name) {
+			$box.append($('<span class="token-name" />').append($('<span />').text(this.name)));
+		}
+
+		this.$box.empty().append($box);
+	};
+	this.destroy = function() {
+		this.$box.remove();
 	};
 };

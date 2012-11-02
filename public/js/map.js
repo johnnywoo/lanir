@@ -31,17 +31,6 @@ var Map = function(options) {
 	/**
 	 * @param {number} id
 	 */
-	this.drawToken = function(id) {drawToken(id);};
-
-	/**
-	 * @param {number} id
-	 * @param {Array.<number>} place
-	 */
-	this.moveToken = function(id, place) {moveToken(id, place);};
-
-	/**
-	 * @param {number} id
-	 */
 	this.removeToken = function(id) {removeToken(id);};
 
 
@@ -198,32 +187,14 @@ var Map = function(options) {
 	// TOKENS
 
 	var tokens = [];
-	var tokenBoxes = []; // list of jQuery objects
-	var drawToken = function(id) {
-		// removing the old box
-		if(tokenBoxes[id]) {
-			tokenBoxes[id].remove();
-			delete tokenBoxes[id];
-		}
-		if(tokens[id] == undefined) {
-			return;
-		}
+	var addToken = function(token) {
+		token.mapId = -1 + tokens.push(token);
 
-		// drawing the new box
-		var token = tokens[id];
-		var $box = $('<div class="token" />');
-		$box.append(token.render());
-		$box.css({
-			width:  token.size[0] + 'em',
-			height: token.size[1] + 'em',
-			left:   token.place[0] + 'em',
-			top:    token.place[1] + 'em'
-		});
-		$tokenLayer.append($box);
-		tokenBoxes[id] = $box;
+		$tokenLayer.append(token.$box);
+		token.render();
 
 		// dragging the token around
-		new DragDrop($box, {
+		new DragDrop(token.$box, {
 			start: function(dd) {
 				dd.xStartPlace = token.place.slice(0); // clone the array
 				dd.xLastPlace  = token.place.slice(0); // clone the array
@@ -250,9 +221,7 @@ var Map = function(options) {
 					dd.xArrow.end(place);
 
 					// redraw the arrow
-					if(dd.x$arrowBox) {
-						dd.x$arrowBox.remove();
-					}
+					dd.x$arrowBox && dd.x$arrowBox.remove();
 					dd.x$arrowBox = dd.xArrow.draw();
 					$tokenLayer.append(dd.x$arrowBox);
 
@@ -267,35 +236,14 @@ var Map = function(options) {
 				token.move(dd.xStartPlace);
 			},
 			stop: function(dd) {
-				if(dd.x$arrowBox) {
-					dd.x$arrowBox.remove();
-				}
+				dd.x$arrowBox && dd.x$arrowBox.remove();
 			}
 		});
 	};
-	var moveToken = function(id, place) {
-		if(tokens[id]) {
-			tokens[id].place = place;
-		}
-		if(tokenBoxes[id]) {
-			tokenBoxes[id].css({
-				left:   place[0] + 'em',
-				top:    place[1] + 'em'
-			});
-		}
-	};
-	var addToken = function(token) {
-		token.map = t;
-		token.mapId = -1 + tokens.push(token);
-		drawToken(token.mapId);
-	};
 	var removeToken = function(id) {
 		if(tokens[id] != undefined) {
-			// detach it from the map
-			tokens[id].map   = null;
-			tokens[id].mapId = null;
+			tokens[id].destroy();
 		}
 		delete tokens[id];
-		drawToken(id); // will remove the token box
-	}
+	};
 };
