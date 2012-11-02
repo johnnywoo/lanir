@@ -1,25 +1,15 @@
 var Token = function(options) {
 	// public options
-	this.size  = [1, 1]; // cells [hor, ver]
-	this.place = [0, 0]; // coords of left top square of the token
-	this.image = '';
-	this.name  = '';
-	this.text  = '';
-	this.color = '#004108';
-
-	// filled by the map
-	this.mapId = null;
-
+	this.size    = [1, 1]; // cells [hor, ver]
+	this.place   = [0, 0]; // coords of left top square of the token
+	this.image   = '';
+	this.name    = '';
+	this.text    = '';
+	this.counter = '';
+	this.color   = '#004108'; // green
 	$.extend(this, options || {});
 
-
-	this.$box = $('<div class="token" />');
-	this.$box.css({
-		width:  this.size[0] + 'em',
-		height: this.size[1] + 'em',
-		left:   this.place[0] + 'em',
-		top:    this.place[1] + 'em'
-	});
+	var t = this;
 
 
 
@@ -27,35 +17,70 @@ var Token = function(options) {
 	// PUBLIC INTERFACE
 	//
 
+	this.set = function(options) {
+		$.extend(t, options);
+		t.render();
+	};
+
 	this.move = function(place) {
-		this.place = place;
-		this.$box.css({
+		move(place);
+	};
+
+	this.render = function() {
+		render();
+	};
+
+	this.destroy = function() {
+		this.$box.remove();
+	};
+
+
+
+
+	//
+	// INITIALIZATION
+	//
+
+	t.$box = $('<div class="token" />');
+	t.$box.css({
+		width:  t.size[0] + 'em',
+		height: t.size[1] + 'em',
+		left:   t.place[0] + 'em',
+		top:    t.place[1] + 'em'
+	});
+
+	var move = function(place) {
+		t.place = place;
+		t.$box.css({
 			left:   place[0] + 'em',
 			top:    place[1] + 'em'
 		});
 	};
-	this.render = function() {
-		var $box;
-		if(this.image != '') {
+
+	var render = function() {
+		var $inner;
+
+		if(t.image != '') {
 			// image-based token
-			$box = $('<div class="token-image-body" />');
-			$box.css('background', 'url("' + this.image + '") left top no-repeat');
-			$box.css('background-size', '100% 100%');
+			$inner = $('<div class="token-image-body" />');
+			$inner.css('background', 'url("' + t.image + '") left top no-repeat');
+			$inner.css('background-size', '100% 100%');
 		} else {
 			// text-based token
-			$box = $('<div class="token-text-body" />');
-			$box.text(this.text || this.name.substring(0, 1));
-			$box.css('background-color', this.color);
-			$box.css('color', 'white');
+			$inner = $('<div class="token-text-body" />');
+			$inner.text(t.text || t.name.substring(0, 1));
+			$inner.css('background-color', t.color);
+			$inner.css('color', 'white');
 		}
 
-		if(this.name) {
-			$box.append($('<span class="token-name" />').append($('<span />').text(this.name)));
+		if(t.name) {
+			$inner.append($('<span class="token-name" />').append($('<span />').text(t.name)));
 		}
 
-		this.$box.empty().append($box);
-	};
-	this.destroy = function() {
-		this.$box.remove();
+		if(t.counter) {
+			$inner.append($('<span class="token-counter" />').append($('<span />').text(t.counter)));
+		}
+
+		t.$box.empty().append($inner);
 	};
 };

@@ -19,19 +19,28 @@ var Map = function(options) {
 	// PUBLIC INTERFACE
 	//
 
-	this.removeZoom = function() {removeZoom();};
+	this.removeZoom = function() {
+		removeZoom();
+	};
 
-	this.centerView = function() {centerView();};
+	this.centerView = function() {
+		centerView();
+	};
 
 	/**
 	 * @param {Token} token
+	 * @return {number} id
 	 */
-	this.addToken = function(token) {addToken(token);};
+	this.addToken = function(token) {
+		return addToken(token);
+	};
 
 	/**
 	 * @param {number} id
 	 */
-	this.removeToken = function(id) {removeToken(id);};
+	this.removeToken = function(id) {
+		removeToken(id);
+	};
 
 
 
@@ -188,7 +197,7 @@ var Map = function(options) {
 
 	var tokens = [];
 	var addToken = function(token) {
-		token.mapId = -1 + tokens.push(token);
+		var tokenId = -1 + tokens.push(token);
 
 		$tokenLayer.append(token.$box);
 		token.render();
@@ -207,6 +216,7 @@ var Map = function(options) {
 				var arrow = new ShapeArrow();
 				arrow.start(dd.xStartPlace);
 				dd.xArrow = arrow;
+				token.set({counter: dd.xArrow.getLength()});
 			},
 			otherclick: function(dd) {
 				var place = getCellCoordsFromPoint(dd.currentX, dd.currentY, dd.xCorrectionShift);
@@ -229,6 +239,7 @@ var Map = function(options) {
 					// on redraw the DragDrop object will be recreated with the token
 					// and the whole thing explodes with weird effects
 					token.move(place);
+					token.set({counter: dd.xArrow.getLength()});
 				}
 			},
 			cancel: function(dd) {
@@ -237,8 +248,11 @@ var Map = function(options) {
 			},
 			stop: function(dd) {
 				dd.x$arrowBox && dd.x$arrowBox.remove();
+				token.set({counter: ''});
 			}
 		});
+
+		return tokenId;
 	};
 	var removeToken = function(id) {
 		if(tokens[id] != undefined) {

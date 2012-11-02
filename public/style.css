@@ -4,7 +4,7 @@ body {background: gray; overflow: hidden}
 #canvas {height: 100%; width: 100%; position: relative}
 
 body {padding-right: 202px}
-#sidebar {position: fixed; top: 0; bottom: 0; right: 0; width: 200px; background: white; border-left: black 2px solid; z-index: 100; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; padding: 0 0.3em}
+#sidebar {position: fixed; top: 0; bottom: 0; right: 0; width: 200px; background: white; border-left: black 2px solid; z-index: 100; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; padding: 0 0.3em; font-size: 11px}
 
 /* #canvas > .map-canvas > .map-grid > .map-grid-cell */
 
@@ -46,6 +46,8 @@ z-index levels:
 .token-image-body {}
 .token-name {font-size: 0.2em; position: absolute; bottom: 0; left: 0; right: 0}
 	.token-name span {background: ivory; border: 1px gray solid; border-radius: 0.35em; color: black; padding: 0 0.3em; font-family: sans-serif}
+.token-counter {position: absolute; top: 50%; left: 0; width: 100%;}
+	.token-counter span {display:inline-block; margin-top: -0.6em; font-size: 0.5em; background: ivory; border: 1px black solid; border-radius: 0.35em; color: black; font-family: sans-serif; padding: 0 0.1em}
 .map-zoom-out .token-name {display: none}
 .map-zoom-microscope .token-name {font-size: 0.15em}
 

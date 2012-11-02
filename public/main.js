@@ -5,6 +5,7 @@
 // multiple tokens on the same square
 // token library, creating new tokens from it
 // selecting tokens
+// removing tokens
 // tools, tool selection
 // drawer on the right
 //
@@ -16,14 +17,14 @@
 // stats (select token to show drawer with stats and scores)
 
 // candy:
-// when moving a token, show step count
 // when moving a big token, the arrow should be positioned relative to its center
+// big token without image should have a nice huge letter in it
 // minimum zoom out
+// ipad support for player mode
 
 // log of actions and undo
 
 // player mode (no sidebar)
-// ipad support for player mode
 
 
 // effects have defining properties

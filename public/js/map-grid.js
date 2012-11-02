@@ -21,7 +21,7 @@ var MapGrid = function(w, h) {
 	/**
 	 * @return {jQuery} grid element
 	 */
-	this.draw = function() {return draw();};
+	this.draw = function() { return draw(); };
 
 	this.getCellWidth = function() {
 		if(horLookup.length == 0) {

@@ -53,13 +53,34 @@ var ShapeArrow = function() {
 	 * @param {Array.<number>} place
 	 * @return {jQuery}
 	 */
-	this.draw = function(place) { return draw(place || [0, 0]); };
+	this.draw = function(place) {
+		return draw(place || [0, 0]);
+	};
+
+	this.getLength = function() {
+		return getLength();
+	};
 
 
 
 	//
 	// ENTRAILS
 	//
+
+	var getLength = function() {
+		var l = 0;
+		for(var i = 0; i < points.length; i++) {
+			var point = points[i];
+			var nextPoint = points[i + 1] || end;
+
+			// luckily in D&D trigonometry is really easy
+			l += Math.max(
+				Math.abs(point[0] - nextPoint[0]),
+				Math.abs(point[1] - nextPoint[1])
+			);
+		}
+		return l;
+	};
 
 	var draw = function(place) {
 		// first we need to determine shape size
