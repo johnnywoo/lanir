@@ -22,6 +22,10 @@
 // minimum zoom out
 // ipad support for player mode
 
+// dealing with multiple tokens on the same square:
+// right click should make a context menu with all tokens there,
+// click one to move it to top
+
 // log of actions and undo
 
 // player mode (no sidebar)
