@@ -70,7 +70,7 @@ var ShapeArrow = function() {
 	var getLength = function() {
 		var l = 0;
 		for(var i = 0; i < points.length; i++) {
-			var point = points[i];
+			var point     = points[i];
 			var nextPoint = points[i + 1] || end;
 
 			// luckily in D&D trigonometry is really easy
@@ -129,8 +129,6 @@ var ShapeArrow = function() {
 	 */
 	var line = function(ctx, fromX, fromY, toX, toY) {
 		// x, y are cell coords
-		// cursor starts at the top left corner of starting cell
-		// and after drawing it should end up at top left corner of the target cell
 
 		// drawing the line
 		ctx.beginPath();

@@ -41,14 +41,6 @@ var Token = function(options) {
 	// INITIALIZATION
 	//
 
-	t.$box = $('<div class="token" />');
-	t.$box.css({
-		width:  t.size[0] + 'em',
-		height: t.size[1] + 'em',
-		left:   t.place[0] + 'em',
-		top:    t.place[1] + 'em'
-	});
-
 	var move = function(place) {
 		t.place = place;
 		t.$box.css({
@@ -59,6 +51,13 @@ var Token = function(options) {
 
 	var render = function() {
 		var $inner;
+
+		t.$box.css({
+			width:  t.size[0] + 'em',
+			height: t.size[1] + 'em',
+			left:   t.place[0] + 'em',
+			top:    t.place[1] + 'em'
+		});
 
 		if(t.image != '') {
 			// image-based token
@@ -83,4 +82,7 @@ var Token = function(options) {
 
 		t.$box.empty().append($inner);
 	};
+
+	t.$box = $('<div class="token" />');
+	t.render();
 };

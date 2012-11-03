@@ -12,6 +12,7 @@
 <script type="text/javascript" src="js/token.js"></script>
 <script type="text/javascript" src="js/shape-arrow.js"></script>
 <script type="text/javascript" src="js/map.js"></script>
+<script type="text/javascript" src="js/token-library.js"></script>
 
 <script type="text/javascript" src="main.js"></script>
 
@@ -23,9 +24,11 @@
 </div>
 
 <div id="sidebar">
-    <div id="token-library"></div>
+    <div id="token-library" class="drawer">
+        <div class="drawer-title">Token library</div>
+    </div>
     <div id="help-drawer" class="drawer">
-        Tips: <br />
+        <div class="drawer-title">Tips</div>
         <button id="centerViewBtn" class="keyboard-shortcut">⌘0</button> Center view<br />
         Wheel-drag moves the map. <br />
         Left-drag moves tokens or the map. While moving a token, right click to add a waypoint.

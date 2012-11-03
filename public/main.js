@@ -1,35 +1,52 @@
 
 // to do
 //
-// UI:
-// multiple tokens on the same square
-// token library, creating new tokens from it
-// selecting tokens
-// removing tokens
-// tools, tool selection
-// drawer on the right
+// ESSENTIAL:
 //
-// tools that we need:
-// ruler arrow (toggle enabled/disabled in any mode from the selected token) to show distance
-// constructor mode (add/remove tokens)
-// battle mode (select token to show attack rolls etc)
-// inventory (select token to show items/effects)
-// stats (select token to show drawer with stats and scores)
+// General map features:
+// dealing with multiple tokens on the same square
+// drawing HP on tokens
+// drawing conditions on tokens
+// fog of war
+// selecting a token
+//
+// General everything features:
+// configurable maps (what tokens to offer, image, size, etc etc)
+// map changing
+// real-time remote pointer
+// saving/loading the map state
+// log of actions and undo
+// player mode (no sidebar)
+//
+// Constructor mode:
+// adding tokens
+// removing tokens
+//
+// Battle mode:
+// initiative and rounds, who acted this round
+// select a char token to show roll to hit on all other tokens
+// char inventory and current weapon selection
 
-// candy:
+
+// CANDY:
 // when moving a big token, the arrow should be positioned relative to its center
 // big token without image should have a nice huge letter in it
 // minimum zoom out
 // ipad support for player mode
+// creating text tokens with UI (in library and on the field)
+// deleting tokens from the library
+// group token library by PC/NPC, on field/not on field, etc
+// ruler arrow tool (creates an arrow visible to other players)
+// GM-only tokens invisible to players
 
 // dealing with multiple tokens on the same square:
 // mark such squares with some icon (how do we deal with big tokens?)
 // have a keyboard shortcut to cycle between tokens under cursor
 
-// log of actions and undo
 
-// player mode (no sidebar)
-
+// Offline storage should be a folder with a JSON file
+// and images with meaningful names (map-cemetery-23x34.jpg, pc-tolkor.jpg)
+// do we write a log into the same file?
 
 // effects have defining properties
 // target: owner, character, blast (size, from owner/place)
@@ -75,7 +92,10 @@ $(function(){
 		mapImage: 'images/cemetery.jpg'
 	});
 
+	var tokenLib = new TokenLibrary($('#token-library'));
+
 	createTokens(map);
+	createTokens(tokenLib);
 
 	map.removeZoom();
 	map.centerView();
