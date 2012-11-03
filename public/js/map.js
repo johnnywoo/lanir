@@ -102,7 +102,7 @@ var Map = function(options) {
 
 	new DragDrop(this.$container, {
 		ignoreCancel: true,
-		mouseButtons: [DragDrop.BTN_LEFT, DragDrop.BTN_MIDDLE],
+		mouseButtons: [DragDrop.BTN_LEFT, DragDrop.BTN_RIGHT],
 		start: function(dd) {
 			var offset = $canvas.offset();
 			dd.xTop  = offset.top;
