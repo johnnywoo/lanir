@@ -50,10 +50,14 @@ function load_game_data($folder)
 		}
 		else if(preg_match('/^token[_-](.*?)(?:[_-](\d+)x(\d+))?\.[a-z]+$/', $name, $m))
 		{
+			$tmp_pic_file = make_temporary_public_file($pic);
+
+			$data['images'][$m[1]] = $tmp_pic_file;
+
 			if(empty($data['tokens'][$m[1]]))
 				$data['tokens'][$m[1]] = array('name' => ucfirst($m[1]));
 
-			$data['tokens'][$m[1]]['image'] = make_temporary_public_file($pic);
+			$data['tokens'][$m[1]]['image'] = $tmp_pic_file;
 			if($m[2])
 				$data['tokens'][$m[1]]['size'] = array($m[2], $m[3]);
 		}

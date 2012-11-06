@@ -6,6 +6,8 @@ $game = get_game_folder('test');
 
 $game_data = load_game_data($game);
 
+$is_readonly_mode = empty($_REQUEST['gm']); // mightily secure
+
 ?>
 <html>
 <head>
@@ -39,7 +41,7 @@ $game_data = load_game_data($game);
 // General everything features:
 // map changing
 // real-time remote pointer
-// saving/loading the map state
+// saving/loading the game state
 // log of actions and undo
 // player mode (no sidebar)
 //
@@ -87,9 +89,49 @@ $game_data = load_game_data($game);
 // icons associated with their names, so icons can be made generic etc
 
 
-var gameData = <?=json_encode($game_data)?>;
 
-function initMap(gameData) {
+//
+// DATA
+//
+
+var gameData       = <?=json_encode($game_data)?>;
+var isReadonlyMode = <?=json_encode($is_readonly_mode)?>;
+
+$(function(){
+
+	//
+	// INITIALIZATION
+	//
+
+	if(isReadonlyMode) {
+		$('body').addClass('readonly-mode');
+	}
+
+    var map      = initMap(gameData, isReadonlyMode);
+    var tokenLib = initTokenLib(gameData);
+
+
+
+	//
+	// UI
+	//
+
+	var normView = function() {
+		map.removeZoom();
+		map.centerView();
+	};
+	normView();
+	$('#centerViewBtn').click(normView);
+	$(document).bind('keydown', 'ctrl+0 meta+0', normView);
+});
+
+
+
+//
+// HELPERS
+//
+
+function initMap(gameData, isReadonlyMode) {
 	if(!gameData.current_map || !gameData.maps || !gameData.maps[gameData.current_map]) {
 		alert('No map!');
 		throw 'Bleeeegh';
@@ -97,9 +139,10 @@ function initMap(gameData) {
 	var mapData = gameData['maps'][gameData['current_map']];
 
 	var map = new Map({
-		$container: $('#canvas'),
-		size:       mapData.size, // hor, ver
-		mapImage:   mapData.image
+		$container:    $('#canvas'),
+		size:          mapData.size, // hor, ver
+		mapImage:      mapData.image,
+		movableTokens: !isReadonlyMode
 	});
 
 	// while we don't have adding/removing tokens, we just throw all tokens onto the map
@@ -124,26 +167,6 @@ function initTokenLib(gameData) {
 
     return tokenLib;
 }
-
-$(function(){
-
-    var map = initMap(gameData);
-    var tokenLib = initTokenLib(gameData);
-
-	map.removeZoom();
-	map.centerView();
-
-	$('#centerViewBtn').click(function() {
-		map.removeZoom();
-		map.centerView();
-	});
-
-	$(document).bind('keydown', 'ctrl+0 meta+0', function() {
-		map.removeZoom();
-		map.centerView();
-	});
-});
-
 
 </script>
 

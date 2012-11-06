@@ -1,7 +1,8 @@
 var Map = function(options) {
-	this.$container = null;
-	this.size       = [25, 20]; // cells [horizontal, vertical]
-	this.mapImage   = '';
+	this.$container    = null;
+	this.size          = [25, 20]; // cells [horizontal, vertical]
+	this.mapImage      = '';
+	this.movableTokens = true;
 
 	this.zoomLevels = [
 		// cell size in pixels: canvas class
@@ -202,57 +203,59 @@ var Map = function(options) {
 		$tokenLayer.append(token.$box);
 		token.render();
 
-		// dragging the token around
-		new DragDrop(token.$box, {
-			start: function(dd) {
-				dd.xStartPlace = token.place.slice(0); // clone the array
-				dd.xLastPlace  = token.place.slice(0); // clone the array
-				// we might have grabbed the token not by its top left corner, so let's adjust for it
-				var grabPlace = getCellCoordsFromPoint(dd.currentX, dd.currentY);
-				dd.xCorrectionShift = [
-					token.place[0] - grabPlace[0],
-					token.place[1] - grabPlace[1]
-				];
-				var arrow = new ShapeArrow();
-				arrow.start(dd.xStartPlace);
-				dd.xArrow = arrow;
+		if(t.movableTokens) {
+			// dragging the token around
+			new DragDrop(token.$box, {
+				start: function(dd) {
+					dd.xStartPlace = token.place.slice(0); // clone the array
+					dd.xLastPlace  = token.place.slice(0); // clone the array
+					// we might have grabbed the token not by its top left corner, so let's adjust for it
+					var grabPlace = getCellCoordsFromPoint(dd.currentX, dd.currentY);
+					dd.xCorrectionShift = [
+						token.place[0] - grabPlace[0],
+						token.place[1] - grabPlace[1]
+					];
+					var arrow = new ShapeArrow();
+					arrow.start(dd.xStartPlace);
+					dd.xArrow = arrow;
 
-				token.$box.css({'z-index': maxZIndex + 1});
-			},
-			otherclick: function(dd) {
-				var place = getCellCoordsFromPoint(dd.currentX, dd.currentY, dd.xCorrectionShift);
-				dd.xArrow.point(place);
-			},
-			redraw: function(dd) {
-				var place = getCellCoordsFromPoint(dd.currentX, dd.currentY, dd.xCorrectionShift);
-				if(place[0] != dd.xLastPlace[0] || place[1] != dd.xLastPlace[1]) {
-					dd.xLastPlace = place.slice(0); // clone the array
+					token.$box.css({'z-index': maxZIndex + 1});
+				},
+				otherclick: function(dd) {
+					var place = getCellCoordsFromPoint(dd.currentX, dd.currentY, dd.xCorrectionShift);
+					dd.xArrow.point(place);
+				},
+				redraw: function(dd) {
+					var place = getCellCoordsFromPoint(dd.currentX, dd.currentY, dd.xCorrectionShift);
+					if(place[0] != dd.xLastPlace[0] || place[1] != dd.xLastPlace[1]) {
+						dd.xLastPlace = place.slice(0); // clone the array
 
-					// adjust the arrow
-					dd.xArrow.end(place);
+						// adjust the arrow
+						dd.xArrow.end(place);
 
-					// redraw the arrow
+						// redraw the arrow
+						dd.x$arrowBox && dd.x$arrowBox.remove();
+						dd.x$arrowBox = dd.xArrow.draw();
+						$tokenLayer.append(dd.x$arrowBox);
+
+						// we cannot redraw here!
+						// on redraw the DragDrop object will be recreated with the token
+						// and the whole thing explodes with weird effects
+						token.move(place);
+						token.set({counter: dd.xArrow.getLength()});
+					}
+				},
+				cancel: function(dd) {
+					dd.stop(dd);
+					token.move(dd.xStartPlace);
+				},
+				stop: function(dd) {
 					dd.x$arrowBox && dd.x$arrowBox.remove();
-					dd.x$arrowBox = dd.xArrow.draw();
-					$tokenLayer.append(dd.x$arrowBox);
-
-					// we cannot redraw here!
-					// on redraw the DragDrop object will be recreated with the token
-					// and the whole thing explodes with weird effects
-					token.move(place);
-					token.set({counter: dd.xArrow.getLength()});
+					token.set({counter: ''});
+					normalizeTokenZIndices();
 				}
-			},
-			cancel: function(dd) {
-				dd.stop(dd);
-				token.move(dd.xStartPlace);
-			},
-			stop: function(dd) {
-				dd.x$arrowBox && dd.x$arrowBox.remove();
-				token.set({counter: ''});
-				normalizeTokenZIndices();
-			}
-		});
+			});
+		}
 
 		return tokenId;
 	};

@@ -3,6 +3,9 @@ body {background: gray; overflow: hidden}
 
 #canvas {height: 100%; width: 100%; position: relative}
 
+.readonly-mode #sidebar {display: none}
+.readonly-mode {padding-right: 0}
+
 body {padding-right: 202px}
 #sidebar {position: fixed; top: 0; bottom: 0; right: 0; width: 200px; background: white; border-left: black 2px solid; z-index: 100; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; padding: 0 0.3em; font-size: 11px}
 
@@ -65,3 +68,6 @@ z-index levels:
 
 .token-library-cell {display: inline-block; position: relative; font-size: 50px; width: 55px; height: 55px; margin: 3px}
 .token-library-group-name {font-weight: bold}
+
+
+
