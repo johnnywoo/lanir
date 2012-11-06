@@ -18,6 +18,8 @@ function load_game_data($folder)
 {
 	$data = json_decode(file_get_contents($folder . '/game.json'), true);
 
+	$data['name'] = basename($folder);
+
 	// first map is the default
 	$data['current_map'] = reset(array_keys($data['maps'])); // needs the map in the config
 
@@ -97,4 +99,25 @@ function make_temporary_public_file($fname)
 
 	copy($fname, $tmp_name);
 	return 'tmp/'.$new_basename;
+}
+
+function log_write($game, $entry)
+{
+	$folder = get_game_folder($game);
+	$log = $folder.'/log.json';
+
+	$data = log_read($game);
+	$data[] = $entry;
+
+	file_put_contents($log, json_encode($data));
+}
+
+function log_read($game)
+{
+	$folder = get_game_folder($game);
+	$log = $folder.'/log.json';
+	if(!file_exists($log))
+		file_put_contents($log, json_encode(array()));
+
+	return json_decode(file_get_contents($log), true);
 }

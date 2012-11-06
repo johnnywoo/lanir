@@ -3,6 +3,7 @@ var Map = function(options) {
 	this.size          = [25, 20]; // cells [horizontal, vertical]
 	this.mapImage      = '';
 	this.movableTokens = true;
+	this.onmove        = null;
 
 	this.zoomLevels = [
 		// cell size in pixels: canvas class
@@ -41,6 +42,14 @@ var Map = function(options) {
 	 */
 	this.removeToken = function(id) {
 		removeToken(id);
+	};
+
+	/**
+	 * @param {number} id
+	 * @return {Token}
+	 */
+	this.getToken = function(id) {
+		return tokens[id] || null;
 	};
 
 
@@ -246,13 +255,18 @@ var Map = function(options) {
 					}
 				},
 				cancel: function(dd) {
-					dd.stop(dd);
 					token.move(dd.xStartPlace);
+
+					dd.x$arrowBox && dd.x$arrowBox.remove();
+					token.set({counter: ''});
+					normalizeTokenZIndices();
 				},
 				stop: function(dd) {
 					dd.x$arrowBox && dd.x$arrowBox.remove();
 					token.set({counter: ''});
 					normalizeTokenZIndices();
+
+					t.onmove && t.onmove(tokenId, token.place);
 				}
 			});
 		}

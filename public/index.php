@@ -2,11 +2,14 @@
 
 require_once __DIR__.'/../lib/functions.php';
 
-$game = get_game_folder('test');
+$game_name = 'test';
+$game = get_game_folder($game_name);
 
 $game_data = load_game_data($game);
 
 $is_readonly_mode = empty($_REQUEST['gm']); // mightily secure
+
+$log_entries = log_read($game_name);
 
 ?>
 <html>
@@ -24,6 +27,8 @@ $is_readonly_mode = empty($_REQUEST['gm']); // mightily secure
 <script type="text/javascript" src="js/shape-arrow.js"></script>
 <script type="text/javascript" src="js/map.js"></script>
 <script type="text/javascript" src="js/token-library.js"></script>
+<script type="text/javascript" src="js/game-log.js"></script>
+<script type="text/javascript" src="js/game.js"></script>
 
 <script type="text/javascript">
 
@@ -95,8 +100,9 @@ $is_readonly_mode = empty($_REQUEST['gm']); // mightily secure
 
 var gameData       = <?=json_encode($game_data)?>;
 var isReadonlyMode = <?=json_encode($is_readonly_mode)?>;
+var logEntries     = <?=json_encode($log_entries)?>;
 
-$(function(){
+$(function() {
 
 	//
 	// INITIALIZATION
@@ -108,6 +114,16 @@ $(function(){
 
     var map      = initMap(gameData, isReadonlyMode);
     var tokenLib = initTokenLib(gameData);
+	var gameLog  = new GameLog({
+		url: 'log.php?game='+encodeURIComponent(gameData.name)
+	});
+	var game = new Game({
+		data: gameData,
+		map:  map,
+		log:  gameLog
+	});
+
+    gameLog.load(logEntries); // applies all commands (important to call this AFTER all callbacks were installed)
 
 
 

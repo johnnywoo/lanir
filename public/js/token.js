@@ -42,7 +42,7 @@ var Token = function(options) {
 	//
 
 	var move = function(place) {
-		t.place = place;
+		t.place = place.slice(0);
 		t.$box.css({
 			left:   place[0] + 'em',
 			top:    place[1] + 'em'
