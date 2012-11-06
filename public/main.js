@@ -61,23 +61,23 @@
 
 
 
-function createTokens(map) {
-	map.addToken(new Token({
-		name: 'Statue',
-		place: [9,9]
-	}));
-	map.addToken(new Token({
+function createTokenLib(lib) {
+	lib.addToken('PC', new Token({
 		name: 'Nathan',
 		image: 'images/token-nathan.jpg',
 		place: [9,10]
 	}));
-	map.addToken(new Token({
+	lib.addToken('PC', new Token({
 		name: 'Big Nathan',
 		image: 'images/token-nathan.jpg',
 		size: [2,2],
 		place: [6,9]
 	}));
-	map.addToken(new Token({
+	lib.addToken('Cemetery', new Token({
+		name: 'Statue',
+		place: [9,9]
+	}));
+	lib.addToken('Cemetery', new Token({
 		name: 'Oval statue',
 		size: [3,1],
 		place: [6,7]
@@ -94,13 +94,12 @@ $(function(){
 
 	var tokenLib = new TokenLibrary($('#token-library'));
 
-	createTokens(map);
-	createTokens(tokenLib);
+	createTokenLib(tokenLib);
 
 	map.removeZoom();
 	map.centerView();
 
-	$('#centerViewBtn').click(function(){
+	$('#centerViewBtn').click(function() {
 		map.removeZoom();
 		map.centerView();
 	});

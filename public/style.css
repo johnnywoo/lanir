@@ -64,3 +64,4 @@ z-index levels:
 	.keyboard-shortcut:hover {background: #e8e8db}
 
 .token-library-cell {display: inline-block; position: relative; font-size: 50px; width: 55px; height: 55px; margin: 3px}
+.token-library-group-name {font-weight: bold}
