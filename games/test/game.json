@@ -1,0 +1,28 @@
+{
+	"pc": {
+		"nathan": {
+			"name": "Nathan"
+		},
+		"tolkor": {
+			"name": "Tolkor"
+		},
+		"wilhelm": {
+			"name": "Wilhelm"
+		},
+		"betula": {
+			"name": "Betula"
+		}
+	},
+
+	"current_map": "",
+	"maps": {
+		"cemetery": {
+			"npc": {
+				"zombie": {"name": "Zombie"},
+				"skel": {"name": "Skeleton"}
+			}
+		}
+	},
+
+	"tokens": {}
+}
