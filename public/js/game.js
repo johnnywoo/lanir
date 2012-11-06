@@ -11,7 +11,7 @@ var Game = function(options) {
 
 
 	//
-	// INITIALIZATION
+	// INSTALLING CALLBACKS
 	//
 
 	this.log.callback = function(entry) {
@@ -35,4 +35,12 @@ var Game = function(options) {
 			place: place.slice(0)
 		});
 	};
+
+
+
+	//
+	// INITIALIZATION
+	//
+
+	this.log.startLoading(); // loads and applies all commands (important to call this AFTER all callbacks were installed)
 };

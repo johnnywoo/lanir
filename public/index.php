@@ -34,6 +34,12 @@ $log_entries = log_read($game_name);
 
 // to do
 //
+// remove token logic from backend
+// load all the data into JS and process there
+// log should operate on game objects, not map tokens
+// think about problems with making actions while log is loading (should not be an issue with one GM and readonly players)
+
+
 // ESSENTIAL:
 //
 // General map features:
@@ -100,7 +106,6 @@ $log_entries = log_read($game_name);
 
 var gameData       = <?=json_encode($game_data)?>;
 var isReadonlyMode = <?=json_encode($is_readonly_mode)?>;
-var logEntries     = <?=json_encode($log_entries)?>;
 
 $(function() {
 
@@ -117,13 +122,12 @@ $(function() {
 	var gameLog  = new GameLog({
 		url: 'log.php?game='+encodeURIComponent(gameData.name)
 	});
+	// the main bloody object to rule them all
 	var game = new Game({
 		data: gameData,
 		map:  map,
 		log:  gameLog
 	});
-
-    gameLog.load(logEntries); // applies all commands (important to call this AFTER all callbacks were installed)
 
 
 
