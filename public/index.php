@@ -43,7 +43,6 @@ $is_readonly_mode = empty($_REQUEST['gm']); // mightily secure
 // real-time remote pointer
 // saving/loading the game state
 // log of actions and undo
-// player mode (no sidebar)
 //
 // Battle mode:
 // initiative and rounds, who acted this round
