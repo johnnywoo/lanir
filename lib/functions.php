@@ -20,26 +20,6 @@ function load_game_data($folder)
 
 	$data['name'] = basename($folder);
 
-	// first map is the default
-	$data['current_map'] = reset(array_keys($data['maps'])); // needs the map in the config
-
-	// map names
-	foreach($data['maps'] as $name => $map)
-	{
-		if(empty($map['name']))
-			$data['maps'][$name]['name'] = ucfirst($name);
-	}
-
-	// adding characters into tokens
-	if(!isset($data['tokens']))
-		$data['tokens'] = array();
-	fill_tokens($data['tokens'], $data, 'Global');
-	foreach($data['maps'] as $name => $map)
-	{
-		fill_tokens($data['tokens'], $map, empty($map['name']) ? $name : $map['name']);
-	}
-
-
 	// installing images into the config
 	$pics = glob($folder.'/*.{jpg,jpeg,png,gif}', GLOB_BRACE);
 	foreach($pics as $pic)
@@ -55,33 +35,10 @@ function load_game_data($folder)
 			$tmp_pic_file = make_temporary_public_file($pic);
 
 			$data['images'][$m[1]] = $tmp_pic_file;
-
-			if(empty($data['tokens'][$m[1]]))
-				$data['tokens'][$m[1]] = array('name' => ucfirst($m[1]));
-
-			$data['tokens'][$m[1]]['image'] = $tmp_pic_file;
-			if($m[2])
-				$data['tokens'][$m[1]]['size'] = array($m[2], $m[3]);
 		}
 	}
 
 	return $data;
-}
-
-function fill_tokens(&$tokens, $entity, $group = 'Whatever', $prefix = '')
-{
-	foreach(array('pc', 'npc', 'tokens') as $kind)
-	{
-		if(!empty($entity[$kind]))
-		{
-			foreach($entity[$kind] as $name => $opts)
-			{
-				$tokens[$prefix.$name] = (isset($tokens[$prefix.$name]) ? $tokens[$prefix.$name] : array()) + $opts;
-				if(empty($tokens[$prefix.$name]['group']))
-					$tokens[$prefix . $name]['group'] = ($kind == 'pc') ? 'PC' : $group;
-			}
-		}
-	}
 }
 
 function make_temporary_public_file($fname)

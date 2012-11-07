@@ -31,9 +31,8 @@ $is_readonly_mode = empty($_REQUEST['gm']); // mightily secure
 
 // to do
 //
-// remove token logic from backend
-// load all the data into JS and process there
-// log should operate on game objects, not map tokens
+// describe all characters in one place in game config, use lists of names in other places?
+// separate config sections for characters and their tokens on the map?
 // think about problems with making actions while log is loading (should not be an issue with one GM and readonly players)
 
 
@@ -120,16 +119,16 @@ $(function() {
 		$('body').addClass('readonly-mode');
 	}
 
-    var map      = initMap(gameData, isReadonlyMode);
-    var tokenLib = initTokenLib(gameData);
+	//var tokenLib = new TokenLibrary($('#token-library')); // useless for now
 	var gameLog  = new GameLog({
 		url: 'log.php?game='+encodeURIComponent(gameData.name)
 	});
 	// the main bloody object to rule them all
 	var game = new Game({
 		data: gameData,
-		map:  map,
-		log:  gameLog
+		log:  gameLog,
+		$mapContainer: $('#canvas'),
+		isReadonlyMode: isReadonlyMode
 	});
 
 
@@ -139,56 +138,13 @@ $(function() {
 	//
 
 	var normView = function() {
-		map.removeZoom();
-		map.centerView();
+		game.map.removeZoom();
+		game.map.centerView();
 	};
 	normView();
 	$('#centerViewBtn').click(normView);
 	$(document).bind('keydown', 'ctrl+0 meta+0', normView);
 });
-
-
-
-//
-// HELPERS
-//
-
-function initMap(gameData, isReadonlyMode) {
-	if(!gameData.current_map || !gameData.maps || !gameData.maps[gameData.current_map]) {
-		alert('No map!');
-		throw 'Bleeeegh';
-	}
-	var mapData = gameData['maps'][gameData['current_map']];
-
-	var map = new Map({
-		$container:    $('#canvas'),
-		size:          mapData.size, // hor, ver
-		mapImage:      mapData.image,
-		movableTokens: !isReadonlyMode
-	});
-
-	// while we don't have adding/removing tokens, we just throw all tokens onto the map
-	// when we will have that, it would make sense to only add tokens with a defined place
-	if(gameData.tokens) {
-		$.each(gameData.tokens, function(name, options) {
-			map.addToken(new Token(options));
-		});
-    }
-
-	return map;
-}
-
-function initTokenLib(gameData) {
-	var tokenLib = new TokenLibrary($('#token-library'));
-
-	if(gameData.tokens) {
-		$.each(gameData.tokens, function(name, options) {
-			tokenLib.addToken(options.group || 'Random crap', new Token(options));
-		});
-	}
-
-    return tokenLib;
-}
 
 </script>
 
@@ -200,8 +156,7 @@ function initTokenLib(gameData) {
 </div>
 
 <div id="sidebar">
-    <div id="token-library" class="drawer">
-    </div>
+	<!-- <div id="token-library" class="drawer"></div> -->
     <div id="help-drawer" class="drawer">
         <div class="drawer-title">Tips</div>
         <button id="centerViewBtn" class="keyboard-shortcut">⌘0</button> Center view<br />
