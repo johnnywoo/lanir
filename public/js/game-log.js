@@ -31,6 +31,7 @@ var GameLog = function(options) {
 	 * Initializes the continious loading of new log entries from the server
 	 */
 	this.startLoading = function() {
+		load();
 		setInterval(load, t.loadInterval * 1000);
 	};
 
