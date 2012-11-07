@@ -6,10 +6,7 @@ $game_name = 'test';
 $game = get_game_folder($game_name);
 
 $game_data = load_game_data($game);
-
 $is_readonly_mode = empty($_REQUEST['gm']); // mightily secure
-
-$log_entries = log_read($game_name);
 
 ?>
 <html>

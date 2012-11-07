@@ -53,9 +53,6 @@ var GameLog = function(options) {
 					t.entries.push(entries[i]);
 					t.callback && t.callback(entries[i]);
 				}
-			},
-			error: function() {
-				alert('BLEEEEH!');
 			}
 		});
 	};
@@ -72,9 +69,6 @@ var GameLog = function(options) {
 			success: function() {
 				t.entries.push(entry);
 				callback && callback(entry);
-			},
-			error: function() {
-				alert('BLEEEEH!');
 			}
 		});
 	};
