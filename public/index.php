@@ -33,6 +33,9 @@ $is_readonly_mode = empty($_REQUEST['gm']); // mightily secure
 //
 // describe all characters in one place in game config, use lists of names in other places?
 // separate config sections for characters and their tokens on the map?
+// ('token' is exclusively map UI element, token config = representation;
+// for non-character things like blood use 'objects';
+// token config should have image/text/color info)
 // think about problems with making actions while log is loading (should not be an issue with one GM and readonly players)
 
 
@@ -120,14 +123,14 @@ $(function() {
 	}
 
 	//var tokenLib = new TokenLibrary($('#token-library')); // useless for now
-	var gameLog  = new GameLog({
+	var gameLog = new GameLog({
 		url: 'log.php?game='+encodeURIComponent(gameData.name)
 	});
 	// the main bloody object to rule them all
 	var game = new Game({
-		data: gameData,
-		log:  gameLog,
-		$mapContainer: $('#canvas'),
+		data:           gameData,
+		log:            gameLog,
+		$mapContainer:  $('#canvas'),
 		isReadonlyMode: isReadonlyMode
 	});
 
