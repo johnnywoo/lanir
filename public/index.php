@@ -47,14 +47,14 @@ $is_readonly_mode = empty($_REQUEST['gm']); // mightily secure
 // selecting a token
 //
 // General everything features:
-// map changing
 // real-time remote pointer
 // saving/loading the game state
 // log of actions and undo
 //
 // Battle mode:
-// initiative and rounds, who acted this round
+// initiative and rounds, who acted this round (with regards to inactive tokens)
 // select a char token to show roll to hit on all other tokens
+// char property editing
 // char inventory and current weapon selection
 
 
@@ -63,6 +63,10 @@ $is_readonly_mode = empty($_REQUEST['gm']); // mightily secure
 // Constructor mode:
 // adding tokens
 // removing tokens
+//
+// General everything features:
+// map changing
+
 
 // CANDY:
 // when moving a big token, the arrow should be positioned relative to its center
@@ -74,6 +78,8 @@ $is_readonly_mode = empty($_REQUEST['gm']); // mightily secure
 // group token library by PC/NPC, on field/not on field, etc
 // ruler arrow tool (creates an arrow visible to other players)
 // GM-only tokens invisible to players
+// token representation separate from tokens themselves (pick image by name/keywords/properties etc)
+// list of standard unicode/shape-based token representations (for status effects, actual tokens, etc)
 
 // dealing with multiple tokens on the same square:
 // mark such squares with some icon (how do we deal with big tokens?)
