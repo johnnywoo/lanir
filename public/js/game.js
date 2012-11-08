@@ -1,11 +1,11 @@
 var Game = function(options) {
-	this.data = {};
+	this.data             = {};
 	/** @type {GameLog} */
-	this.log  = null;
+	this.log              = null;
 	/** @type {Map} */
-	this.map  = null;
-	this.isReadonlyMode = false;
-	this.$mapContainer = null;
+	this.map              = null;
+	this.isReadonlyMode   = false;
+	this.$mapContainer    = null;
 	this.$editorContainer = null;
 	$.extend(this, options || {});
 
@@ -51,7 +51,17 @@ var Game = function(options) {
 		$container:    t.$mapContainer,
 		size:          mapData.size, // hor, ver
 		mapImage:      mapData.image,
-		movableTokens: !t.isReadonlyMode
+		movableTokens: !t.isReadonlyMode,
+
+		onselect: function(id, prevId) {
+			if(mapIdToName[id]) {
+				characters[mapIdToName[id]].$editor.show();
+			}
+
+			if(mapIdToName[prevId]) {
+				characters[mapIdToName[prevId]].$editor.hide();
+			}
+		}
 	});
 
 	// filling the UI with character tokens and editors
@@ -69,16 +79,6 @@ var Game = function(options) {
 		t.$editorContainer.append(character.$editor);
 		character.$editor.hide();
 	});
-
-	this.map.onselect = function(id, prevId) {
-		if(mapIdToName[id]) {
-			characters[mapIdToName[id]].$editor.show();
-		}
-
-		if(mapIdToName[prevId]) {
-			characters[mapIdToName[prevId]].$editor.hide();
-		}
-	};
 
 
 
