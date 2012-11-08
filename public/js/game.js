@@ -6,6 +6,7 @@ var Game = function(options) {
 	this.map  = null;
 	this.isReadonlyMode = false;
 	this.$mapContainer = null;
+	this.$editorContainer = null;
 	$.extend(this, options || {});
 
 	var t = this;
@@ -32,6 +33,19 @@ var Game = function(options) {
 		}
 	});
 
+	// populating characters
+	var characters = {};
+	var addCharacter = function(name, options) {
+		characters[name] = new Character({name: name, tokenOptions: options});
+	};
+	var forEachChar = function(data, callback) {
+		data.pc && $.each(data.pc, function(k, v) { callback(k, v, 'pc'); });
+		data.npc && $.each(data.npc, function(k, v) { callback(k, v, 'npc'); });
+	};
+	forEachChar(t.data, addCharacter);
+	forEachChar(mapData, addCharacter);
+
+
 	// creating the map
 	this.map = new Map({
 		$container:    t.$mapContainer,
@@ -40,24 +54,31 @@ var Game = function(options) {
 		movableTokens: !t.isReadonlyMode
 	});
 
-	// filling the map with tokens
-	var charTokens  = {};
+	// filling the UI with character tokens and editors
 	var mapIdToName = {};
-	var addMapToken = function(name, options) {
-		var tokenOptions = $.extend({}, options); // shallow copy
+	$.each(characters, function(name, character) {
+		// map token
 		if(t.data.images[name]) {
-			tokenOptions.image = t.data.images[name];
+			character.tokenOptions.image = t.data.images[name];
 		}
-		var id = t.map.addToken(new Token(tokenOptions));
-		charTokens[name] = t.map.getToken(id);
-		mapIdToName[id]  = name;
+		var id = t.map.addToken(new Token(character.tokenOptions));
+		character.token = t.map.getToken(id);
+		mapIdToName[id] = name;
+
+		// editor
+		t.$editorContainer.append(character.$editor);
+		character.$editor.hide();
+	});
+
+	this.map.onselect = function(id, prevId) {
+		if(mapIdToName[id]) {
+			characters[mapIdToName[id]].$editor.show();
+		}
+
+		if(mapIdToName[prevId]) {
+			characters[mapIdToName[prevId]].$editor.hide();
+		}
 	};
-	var forEachChar = function(data, callback) {
-		data.pc && $.each(data.pc, function(k, v) { callback(k, v, 'pc'); });
-		data.npc && $.each(data.npc, function(k, v) { callback(k, v, 'npc'); });
-	};
-	forEachChar(t.data, addMapToken);
-	forEachChar(mapData, addMapToken);
 
 
 
@@ -72,7 +93,7 @@ var Game = function(options) {
 
 		if(entry.command == 'move') {
 			// name place
-			var token = charTokens[entry.name];
+			var token = characters[entry.name].token;
 			if(token) {
 				token.move(entry.place);
 			}

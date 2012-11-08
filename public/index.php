@@ -7,8 +7,10 @@ $game = get_game_folder($game_name);
 
 $game_data = load_game_data($game);
 $is_readonly_mode = empty($_REQUEST['gm']); // mightily secure
+$only_load_once   = !empty($_REQUEST['only_load_once']);
 
 ?>
+<!DOCTYPE html>
 <html>
 <head>
 <title>Lanir</title>
@@ -26,6 +28,7 @@ $is_readonly_mode = empty($_REQUEST['gm']); // mightily secure
 <script type="text/javascript" src="js/token-library.js"></script>
 <script type="text/javascript" src="js/game-log.js"></script>
 <script type="text/javascript" src="js/game.js"></script>
+<script type="text/javascript" src="js/character.js"></script>
 
 <script type="text/javascript">
 
@@ -46,11 +49,9 @@ $is_readonly_mode = empty($_REQUEST['gm']); // mightily secure
 // drawing HP on tokens
 // drawing conditions on tokens
 // fog of war
-// selecting a token
 //
 // General everything features:
 // real-time remote pointer
-// displaying the log of actions and undo
 //
 // Battle mode:
 // initiative and rounds, who acted this round (with regards to inactive tokens)
@@ -67,6 +68,7 @@ $is_readonly_mode = empty($_REQUEST['gm']); // mightily secure
 //
 // General everything features:
 // map changing
+// displaying the log of actions and undo
 
 
 // CANDY:
@@ -105,8 +107,9 @@ $is_readonly_mode = empty($_REQUEST['gm']); // mightily secure
 // DATA
 //
 
-var gameData       = <?=json_encode($game_data)?>;
-var isReadonlyMode = <?=json_encode($is_readonly_mode)?>;
+var gameData        = <?=json_encode($game_data)?>;
+var isReadonlyMode  = <?=json_encode($is_readonly_mode)?>;
+window.onlyLoadOnce = <?=json_encode($only_load_once)?>; // hackerish flag to prevent insane traffic while debugging
 
 $(function() {
 
@@ -124,10 +127,11 @@ $(function() {
 	});
 	// the main bloody object to rule them all
 	var game = new Game({
-		data:           gameData,
-		log:            gameLog,
-		$mapContainer:  $('#canvas'),
-		isReadonlyMode: isReadonlyMode
+		data:             gameData,
+		log:              gameLog,
+		$mapContainer:    $('#canvas'),
+		$editorContainer: $('#editor-drawer'),
+		isReadonlyMode:   isReadonlyMode
 	});
 
 
@@ -156,6 +160,7 @@ $(function() {
 
 <div id="sidebar">
 	<!-- <div id="token-library" class="drawer"></div> -->
+	<div id="editor-drawer" class="drawer"></div>
     <div id="help-drawer" class="drawer">
         <div class="drawer-title">Tips</div>
         <button id="centerViewBtn" class="keyboard-shortcut">⌘0</button> Center view<br />

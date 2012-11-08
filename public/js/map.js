@@ -1,9 +1,11 @@
 var Map = function(options) {
-	this.$container    = null;
-	this.size          = [25, 20]; // cells [horizontal, vertical]
-	this.mapImage      = '';
-	this.movableTokens = true;
-	this.onmove        = null;
+	this.$container      = null;
+	this.size            = [25, 20]; // cells [horizontal, vertical]
+	this.mapImage        = '';
+	this.movableTokens   = true;
+	this.onmove          = null; // tokenId, place
+	this.onselect        = null; // tokenId, prevTokenId
+	this.selectedTokenId = null;
 
 	this.zoomLevels = [
 		// cell size in pixels: canvas class
@@ -51,6 +53,10 @@ var Map = function(options) {
 	this.getToken = function(id) {
 		return tokens[id] || null;
 	};
+
+	this.selectToken = function(id) {
+		selectToken(id);
+	}
 
 
 
@@ -216,6 +222,7 @@ var Map = function(options) {
 			// dragging the token around
 			new DragDrop(token.$box, {
 				start: function(dd) {
+					selectToken(tokenId);
 					dd.xStartPlace = token.place.slice(0); // clone the array
 					dd.xLastPlace  = token.place.slice(0); // clone the array
 					// we might have grabbed the token not by its top left corner, so let's adjust for it
@@ -228,11 +235,9 @@ var Map = function(options) {
 					arrow.start(dd.xStartPlace);
 					dd.xArrow = arrow;
 
-					token.$box.css({'z-index': maxZIndex + 1});
 				},
 				otherclick: function(dd) {
-					var place = getCellCoordsFromPoint(dd.currentX, dd.currentY, dd.xCorrectionShift);
-					dd.xArrow.point(place);
+					dd.xArrow.point(getCellCoordsFromPoint(dd.currentX, dd.currentY, dd.xCorrectionShift));
 				},
 				redraw: function(dd) {
 					var place = getCellCoordsFromPoint(dd.currentX, dd.currentY, dd.xCorrectionShift);
@@ -259,12 +264,10 @@ var Map = function(options) {
 
 					dd.x$arrowBox && dd.x$arrowBox.remove();
 					token.set({counter: ''});
-					normalizeTokenZIndices();
 				},
 				stop: function(dd) {
 					dd.x$arrowBox && dd.x$arrowBox.remove();
 					token.set({counter: ''});
-					normalizeTokenZIndices();
 
 					t.onmove && t.onmove(tokenId, token.place);
 				}
@@ -295,5 +298,21 @@ var Map = function(options) {
 			list[i][1].$box.css('z-index', zeroZIndex + i);
 		}
 		maxZIndex = zeroZIndex + i;
+	};
+
+	var selectToken = function(id) {
+		var token = tokens[id];
+
+		token.$box.css({'z-index': maxZIndex + 1});
+		normalizeTokenZIndices();
+
+		if(tokens[t.selectedTokenId]) {
+			tokens[t.selectedTokenId].$box.removeClass('token-selected');
+		}
+		token.$box.addClass('token-selected');
+		var prevId = t.selectedTokenId;
+		t.selectedTokenId = id;
+
+		t.onselect && t.onselect(id, prevId);
 	};
 };

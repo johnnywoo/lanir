@@ -32,7 +32,8 @@ var GameLog = function(options) {
 	 */
 	this.startLoading = function() {
 		load();
-		setInterval(load, t.loadInterval * 1000);
+		if(!window.onlyLoadOnce)
+			setInterval(load, t.loadInterval * 1000);
 	};
 
 

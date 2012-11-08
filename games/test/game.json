@@ -27,6 +27,15 @@
 				"orc-guard-1": {"name": "Orc", "place": [20, 4]},
 				"orc-guard-2": {"name": "Orc", "place": [19, 4]}
 			}
+		},
+		"cave": {
+			"npc": {
+				"kerda": {"name": "Kerda"},
+				"khomad": {"name": "Khomad"},
+				"berhal": {"name": "Berhal"},
+				"kerkouran": {"name": "Kerkouran"},
+				"sica": {"name": "Sica"}
+			}
 		}
 	},
 

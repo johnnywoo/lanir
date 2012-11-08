@@ -1,5 +1,6 @@
 html, body {margin: 0; padding: 0}
 body {background: gray; overflow: hidden}
+form {margin: 0; padding: 0}
 
 #canvas {height: 100%; width: 100%; position: relative}
 
@@ -7,7 +8,7 @@ body {background: gray; overflow: hidden}
 .readonly-mode {padding-right: 0}
 
 body {padding-right: 202px}
-#sidebar {position: fixed; top: 0; bottom: 0; right: 0; width: 200px; background: white; border-left: black 2px solid; z-index: 100; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; padding: 0 0.3em; font-size: 11px}
+#sidebar {position: fixed; top: 0; bottom: 0; right: 0; width: 200px; background: white; border-left: black 2px solid; z-index: 100; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; padding: 0 0.3em; font-size: 11px; overflow: auto}
 
 /* #canvas > .map-canvas > .map-grid > .map-grid-cell */
 
@@ -46,7 +47,6 @@ z-index levels:
 .token {position: absolute}
 
 .token-text-body, .token-image-body {-moz-box-sizing: border-box; -webkit-box-sizing: border-box; height: 100%; width: 100%; font-size: 80%; text-align: center; vertical-align: middle; border-radius: 50%; border: 0.1em silver solid; font-family: serif; cursor: default}
-.token-image-body {}
 .token-name {font-size: 0.2em; position: absolute; bottom: 0; left: 0; right: 0}
 	.token-name span {background: ivory; border: 1px gray solid; border-radius: 0.35em; color: black; padding: 0 0.3em; font-family: sans-serif}
 .token-counter {position: absolute; top: 50%; left: 0; width: 100%;}
@@ -54,6 +54,7 @@ z-index levels:
 .map-zoom-out .token-name {display: none}
 .map-zoom-microscope .token-name {font-size: 0.15em}
 
+.token-selected .token-text-body, .token-selected .token-image-body {border-color: #00bfff}
 
 
 
@@ -70,4 +71,12 @@ z-index levels:
 .token-library-group-name {font-weight: bold}
 
 
+
+.character-editor {margin: 0.5em 0}
+	.character-editor .character-name {font-weight: bold}
+	.character-editor .prefix {width: 50px; display: inline-block}
+
+input.number {
+	width: 50px
+}
 
