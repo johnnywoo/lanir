@@ -14,7 +14,7 @@
 		}
 	},
 
-	"current_map": "",
+	"current_map": "cave",
 	"maps": {
 		"cemetery": {
 			"npc": {

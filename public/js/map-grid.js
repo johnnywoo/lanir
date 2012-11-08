@@ -62,6 +62,8 @@ var MapGrid = function(w, h) {
 				if(w == 0) {
 					// once per row
 					verLookup.push($cell);
+				} else {
+					break;
 				}
 			}
 			// once per column

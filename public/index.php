@@ -82,6 +82,7 @@ $is_readonly_mode = empty($_REQUEST['gm']); // mightily secure
 // GM-only tokens invisible to players
 // token representation separate from tokens themselves (pick image by name/keywords/properties etc)
 // list of standard unicode/shape-based token representations (for status effects, actual tokens, etc)
+// optionally drawing a grid (color in the map settings) as one element (or at most w+h instead of w*h); we need the grid to be visible to align it to the drawn grid on the map
 
 // dealing with multiple tokens on the same square:
 // mark such squares with some icon (how do we deal with big tokens?)
