@@ -49,7 +49,7 @@ z-index levels:
 .token-text-body, .token-image-body {-moz-box-sizing: border-box; -webkit-box-sizing: border-box; height: 100%; width: 100%; font-size: 80%; text-align: center; vertical-align: middle; border-radius: 50%; border: 0.1em silver solid; font-family: serif; cursor: default}
 .token-name {font-size: 0.2em; position: absolute; bottom: 0; left: 0; right: 0}
 	.token-name span {background: ivory; border: 1px gray solid; border-radius: 0.35em; color: black; padding: 0 0.3em; font-family: sans-serif}
-.token-counter {position: absolute; top: 50%; left: 0; width: 100%;}
+.token-counter {position: absolute; top: 0; left: 0; width: 100%;}
 	.token-counter span {display:inline-block; margin-top: -0.6em; font-size: 0.5em; background: ivory; border: 1px black solid; border-radius: 0.35em; color: black; font-family: sans-serif; padding: 0 0.1em}
 .map-zoom-out .token-name {display: none}
 .map-zoom-microscope .token-name {font-size: 0.15em}
@@ -76,7 +76,5 @@ z-index levels:
 	.character-editor .character-name {font-weight: bold}
 	.character-editor .prefix {width: 50px; display: inline-block}
 
-input.number {
-	width: 50px
-}
+input.number {width: 50px}
 

@@ -72,7 +72,6 @@ $only_load_once   = !empty($_REQUEST['only_load_once']);
 
 
 // CANDY:
-// counters are displayed wrong in chrome
 // when moving a big token, the arrow should be positioned relative to its center
 // big token without image should have a nice huge letter in it
 // minimum zoom out
