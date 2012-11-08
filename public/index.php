@@ -50,8 +50,7 @@ $is_readonly_mode = empty($_REQUEST['gm']); // mightily secure
 //
 // General everything features:
 // real-time remote pointer
-// saving/loading the game state
-// log of actions and undo
+// displaying the log of actions and undo
 //
 // Battle mode:
 // initiative and rounds, who acted this round (with regards to inactive tokens)
@@ -88,10 +87,6 @@ $is_readonly_mode = empty($_REQUEST['gm']); // mightily secure
 // mark such squares with some icon (how do we deal with big tokens?)
 // have a keyboard shortcut to cycle between tokens under cursor
 
-
-// Offline storage should be a folder with a JSON file
-// and images with meaningful names (map-cemetery-23x34.jpg, pc-tolkor.jpg)
-// do we write a log into the same file?
 
 // effects have defining properties
 // target: owner, character, blast (size, from owner/place)

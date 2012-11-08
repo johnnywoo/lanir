@@ -21,6 +21,12 @@
 				"zombie": {"name": "Zombie"},
 				"skel": {"name": "Skeleton"}
 			}
+		},
+		"village": {
+			"npc": {
+				"orc-guard-1": {"name": "Orc", "place": [20, 4]},
+				"orc-guard-2": {"name": "Orc", "place": [19, 4]}
+			}
 		}
 	},
 
