@@ -43,21 +43,24 @@ var Token = function(options) {
 		return visibleArea;
 	};
 
-	var calculateVisibleArea = function() {
-		visibleArea = [];
-		for(var x = parseInt(t.place[0]) - t.range; x <= parseInt(t.place[0]) + t.range; x++) {
-			for(var y = parseInt(t.place[1]) - t.range; y <= parseInt(t.place[1]) + t.range; y++) {
-				if((Math.pow(parseInt(t.place[0]) - x, 2) + Math.pow(parseInt(t.place[1]) - y, 2)) <= Math.pow(t.range, 2)) {
-					visibleArea.push(x + '_' + y);
-				}
-			}
-		}
-	};
 
 
 	//
 	// INITIALIZATION
 	//
+
+	var calculateVisibleArea = function() {
+		visibleArea = [];
+		var w = t.place[0];
+		var h = t.place[1];
+		for(var x = w - t.range; x <= w + t.range; x++) {
+			for(var y = h - t.range; y <= h + t.range; y++) {
+				if((Math.pow(w - x, 2) + Math.pow(h - y, 2)) <= Math.pow(t.range, 2)) {
+					visibleArea.push(x + '_' + y);
+				}
+			}
+		}
+	};
 
 	var move = function(place) {
 		t.place = place.slice(0);
