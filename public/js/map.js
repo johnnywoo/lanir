@@ -1,4 +1,5 @@
 var Map = function(options) {
+	/** @type {jQuery} */
 	this.$container      = null;
 	this.size            = [25, 20]; // cells [horizontal, vertical]
 	this.mapImage        = '';
@@ -6,6 +7,8 @@ var Map = function(options) {
 	this.onmove          = null; // tokenId, place
 	this.onselect        = null; // tokenId, prevTokenId
 	this.selectedTokenId = null;
+	/** @type {FogOfWar} */
+	this.fog             = null;
 
 	this.zoomLevels = [
 		// cell size in pixels: canvas class
@@ -56,11 +59,11 @@ var Map = function(options) {
 
 	this.selectToken = function(id) {
 		selectToken(id);
-	}
+	};
 
 	this.getTokens = function() {
 		return tokens;
-	}
+	};
 
 
 
@@ -81,9 +84,8 @@ var Map = function(options) {
 	var gridW = this.size[0];
 	var gridH = this.size[1];
 
-	var $e = this.$container;
 	// delete everything inside the canvas
-	$e.empty();
+	this.$container.empty();
 
 	// the container receives a canvas div that will hold all layers of the map
 	// it is set to a fixed size using 1em = 1 grid square
@@ -98,7 +100,7 @@ var Map = function(options) {
 			'background-size': gridW + 'em ' + gridH + 'em' // must be set after the image
 		});
 	}
-	$e.append($canvas);
+	this.$container.append($canvas);
 
 	// the grid layer
 	var grid = new MapGrid(gridW, gridH);

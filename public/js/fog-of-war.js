@@ -1,40 +1,47 @@
 var FogOfWar = function(options) {
+	/** @type {jQuery} */
 	this.$container = null;
-	this.ctx = null;
-	this.map = null;
+	/** @type {Map} */
+	this.map        = null;
 	$.extend(this, options || {});
 
 	if(this.$container == null) {
-		throw 'No element to draw the map into!';
+		throw 'No element to draw the fog of war into!';
 	}
 
-	var $e = this.$container;
-
-	$canvas = $('<canvas class="fog-of-war" />');
-	$e.append($canvas);
-	this.ctx = $canvas[0].getContext('2d');
 	var t = this;
-	t.ctx.save();
+
+	var $canvas = $('<canvas class="fog-of-war" />');
+	this.$container.append($canvas);
+	var ctx = $canvas[0].getContext('2d');
+
+	var size = 100; // this is essentially graphics quality; actual onscreen size is managed by css (1 em = 1 cell)
+
+	this.toggle = function() {
+		$canvas.toggle();
+	};
 
 	this.draw = function() {
-		var tokens = t.map.getTokens();
 		var visibleArea = [];
-		$.each(tokens, function(i, item) {
-			$.merge(visibleArea, item.getVisibleArea());
+		$.each(t.map.getTokens(), function(id, token) {
+			$.merge(visibleArea, token.getVisibleArea());
 		});
 
-		$canvas[0].setAttribute('width', t.$container.width());
-		$canvas[0].setAttribute('height', t.$container.height());
-		t.ctx.restore();
-		t.ctx.save();
+		// just in case the map changed size
+		var w = t.map.size[0];
+		var h = t.map.size[1];
+		$canvas.attr({
+			width:  size * w,
+			height: size * h
+		}).css({
+			width:  w + 'em',
+			height: h + 'em'
+		});
 
-		var w = t.$container.width() / t.map.size[0];
-		var h = t.$container.height() / t.map.size[1];
-
-		for(x = 0; x < t.map.size[0]; x++) {
-			for(y = 0; y < t.map.size[1]; y++) {
+		for(var x = 0; x < w; x++) {
+			for(var y = 0; y < h; y++) {
 				if($.inArray((x + '_' + y), visibleArea) == -1) {
-					t.ctx.fillRect(x * w, y * h, w, h);
+					ctx.fillRect(x * size, y * size, size, size);
 				}
 			}
 		}
