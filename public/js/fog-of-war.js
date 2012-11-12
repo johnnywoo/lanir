@@ -27,7 +27,7 @@ var FogOfWar = function(options) {
 			$.merge(visibleArea, token.getVisibleArea());
 		});
 
-		// just in case the map changed size
+		// resetting the size erases the canvas, which is quite fortunate
 		var w = t.map.size[0];
 		var h = t.map.size[1];
 		$canvas.attr({

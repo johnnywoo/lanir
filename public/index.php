@@ -49,7 +49,7 @@ $only_load_once   = !empty($_REQUEST['only_load_once']);
 // dealing with multiple tokens on the same square
 // drawing HP on tokens
 // drawing conditions on tokens
-// fog of war: proper dnd trigonometry, remembering previously seen places, hidden tokens, sync of fog refreshing on server, black map before first refresh, only count PCs as seeing tokens
+// fog of war: proper dnd trigonometry, remembering previously seen places, hidden tokens, sync of fog refreshing on server, black map before first refresh, only count PCs as seeing tokens; prevent page search from popping up on ctrl+f
 //
 // General everything features:
 // real-time remote pointer
