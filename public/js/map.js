@@ -58,6 +58,10 @@ var Map = function(options) {
 		selectToken(id);
 	}
 
+	this.getTokens = function() {
+		return tokens;
+	}
+
 
 
 	//
@@ -112,7 +116,10 @@ var Map = function(options) {
 	var $tokenLayer = $('<div class="tokens" />');
 	$canvas.append($tokenLayer);
 
-
+	this.fog = new FogOfWar({
+		$container: $canvas,
+		map: t
+	});
 
 	// PANNING THE MAP
 

@@ -34,6 +34,7 @@ z-index levels:
 100 = sidebar
 */
 .map-grid {z-index: 0}
+.fog-of-war {z-index: 3}
 .under-tokens {z-index: 5}
 .token {z-index: 10}
 .over-tokens {z-index: 50}

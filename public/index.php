@@ -29,6 +29,7 @@ $only_load_once   = !empty($_REQUEST['only_load_once']);
 <script type="text/javascript" src="js/game-log.js"></script>
 <script type="text/javascript" src="js/game.js"></script>
 <script type="text/javascript" src="js/character.js"></script>
+<script type="text/javascript" src="js/fog-of-war.js"></script>
 
 <script type="text/javascript">
 
@@ -147,7 +148,9 @@ $(function() {
 	};
 	normView();
 	$('#centerViewBtn').click(normView);
+	$('#drawFogBtn').click(game.map.fog.draw);
 	$(document).bind('keydown', 'ctrl+0 meta+0', normView);
+	$(document).bind('keydown', 'ctrl+f meta+f', game.map.fog.draw);
 });
 
 </script>
@@ -165,6 +168,7 @@ $(function() {
     <div id="help-drawer" class="drawer">
         <div class="drawer-title">Tips</div>
         <button id="centerViewBtn" class="keyboard-shortcut">⌘0</button> Center view<br />
+        <button id="drawFogBtn" class="keyboard-shortcut">⌘f</button> Draw fog of war<br />
         Right-drag moves the map. <br />
         Left-drag moves tokens or the map. While moving a token, right click to add a waypoint.
     </div>

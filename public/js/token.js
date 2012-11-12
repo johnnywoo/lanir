@@ -6,10 +6,12 @@ var Token = function(options) {
 	this.name    = '';
 	this.text    = '';
 	this.counter = '';
+	this.range   = 3;
 	this.color   = '#004108'; // green
 	$.extend(this, options || {});
 
 	var t = this;
+	var visibleArea = [];
 
 
 
@@ -34,7 +36,23 @@ var Token = function(options) {
 		this.$box.remove();
 	};
 
+	this.getVisibleArea = function() {
+		if(!visibleArea.length) {
+			calculateVisibleArea();
+		}
+		return visibleArea;
+	};
 
+	var calculateVisibleArea = function() {
+		visibleArea = [];
+		for(var x = parseInt(t.place[0]) - t.range; x <= parseInt(t.place[0]) + t.range; x++) {
+			for(var y = parseInt(t.place[1]) - t.range; y <= parseInt(t.place[1]) + t.range; y++) {
+				if((Math.pow(parseInt(t.place[0]) - x, 2) + Math.pow(parseInt(t.place[1]) - y, 2)) <= Math.pow(t.range, 2)) {
+					visibleArea.push(x + '_' + y);
+				}
+			}
+		}
+	};
 
 
 	//
@@ -47,6 +65,7 @@ var Token = function(options) {
 			left:   place[0] + 'em',
 			top:    place[1] + 'em'
 		});
+		calculateVisibleArea();
 	};
 
 	var render = function() {
