@@ -79,3 +79,7 @@ z-index levels:
 
 input.number {width: 50px}
 
+.stats-3column label {display: inline-block; width: 29%; height: 22px; position: relative; margin-right:4%}
+.stats-3column label span {float: left; width: 32%; line-height: 22px;}
+.stats-3column input {float: right; width: 20px;}
+

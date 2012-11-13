@@ -144,22 +144,46 @@ var Character = function(options) {
 	// editor title
 	t.$editor.append($('<form class="character-name" />').text(t.name));
 
-	// params
+	//
+	// PARAM INPUTS
+	//
+
+	var alreadyDrawn = [];
+
+	// custom inputs
+	if(typeof t.params.str != 'undefined') {
+		alreadyDrawn.push('str', 'dex', 'con', 'int', 'wis', 'cha');
+
+		t.$editor.append($('<div class="stats-3column" />').html(
+			// fortitude, reflex, will
+			'<label><span>STR</span> <input type="text" name="str" /></label>'
+			+ '<label><span>DEX</span> <input type="text" name="dex" /></label>'
+			+ '<label><span>WIS</span> <input type="text" name="wis" /></label>'
+			+ '<label><span>CON</span> <input type="text" name="con" /></label>'
+			+ '<label><span>INT</span> <input type="text" name="int" /></label>'
+			+ '<label><span>CHA</span> <input type="text" name="cha" /></label>'
+		));
+	}
+	// generic inputs
 	$.each(t.params, function(param, value) {
+		if($.inArray(param, alreadyDrawn) > -1) {
+			return;
+		}
+
 		var $block = $('<div />');
 
 		switch(typeof value) {
 			case 'boolean':
 				$block.append(
 					$('<label />')
-						.append($('<input type="checkbox" />').attr({name: param, checked: value}))
+						.append($('<input type="checkbox" />').attr('name', param))
 						.append($('<span />').text(' ' + param))
 				);
 				break;
 			case 'number':
 				$block
 					.append($('<span class="prefix" />').text(param + ' '))
-					.append($('<input type="text" class="number" />').attr({name: param, value: value}));
+					.append($('<input type="text" class="number" />').attr('name', param));
 				break;
 			default: // text
 				$block.text('Lolwut? '+param);
@@ -167,4 +191,7 @@ var Character = function(options) {
 
 		t.$editor.append($block);
 	});
+
+	// installing param values
+	$.each(t.params, setInputValue);
 };
