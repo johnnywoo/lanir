@@ -141,8 +141,6 @@ var Character = function(options) {
 			applyChanges(e.target);
 		});
 
-	t.$editor.empty();
-
 	// editor title
 	t.$editor.append($('<form class="character-name" />').text(t.name));
 
