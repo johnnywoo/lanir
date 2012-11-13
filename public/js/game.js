@@ -38,7 +38,7 @@ var Game = function(options) {
 	var characters = {};
 	var addCharacter = function(name, options, kind) {
 		characters[name] = new Character({
-			name:         name,
+			name:         options.name || name,
 			tokenOptions: options
 		});
 		if(kind == 'pc') {

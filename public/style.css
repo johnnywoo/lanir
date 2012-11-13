@@ -74,12 +74,12 @@ z-index levels:
 
 
 .character-editor {margin: 0.5em 0}
-	.character-editor .character-name {font-weight: bold}
+	.character-editor .character-name {font-weight: bold; font-size: 130%; padding-bottom: 3px}
 	.character-editor .prefix {width: 50px; display: inline-block}
 
 input.number {width: 50px}
 
 .stats-3column label {display: inline-block; width: 29%; height: 22px; position: relative; margin-right:4%}
-.stats-3column label span {float: left; width: 32%; line-height: 22px;}
-.stats-3column input {float: right; width: 20px;}
+	.stats-3column label span {float: left; width: 32%; line-height: 22px;}
+	.stats-3column input {float: right; width: 20px;}
 
