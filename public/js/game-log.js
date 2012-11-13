@@ -66,7 +66,7 @@ var GameLog = function(options) {
 			async: false, // do not let the entry to be loaded while we're pushing it
 			data: {
 				command: 'push',
-				entry: entry
+				entry: JSON.stringify(entry)
 			},
 			success: function() {
 				t.entries.push(entry);

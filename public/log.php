@@ -3,7 +3,7 @@
 require_once __DIR__.'/../lib/functions.php';
 
 if($_REQUEST['command'] == 'push')
-	log_write($_REQUEST['game'], $_REQUEST['entry']);
+	log_write($_REQUEST['game'], json_decode($_REQUEST['entry'], true));
 
 if($_REQUEST['command'] == 'get')
 {
