@@ -34,7 +34,7 @@ var Game = function(options) {
 	});
 
 	// populating characters
-	/** @type {Array.<Character>} */
+	/** @type {Object.<string, Character>} */
 	var characters = {};
 	var addCharacter = function(name, options, kind) {
 		characters[name] = new Character({
