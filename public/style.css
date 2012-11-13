@@ -76,6 +76,7 @@ z-index levels:
 .character-editor {margin: 0.5em 0}
 	.character-editor .character-name {font-weight: bold; font-size: 130%; padding-bottom: 3px}
 	.character-editor .prefix {width: 50px; display: inline-block}
+	.character-editor label:hover {background: #c6c6c6 }
 
 input.number {width: 50px}
 
