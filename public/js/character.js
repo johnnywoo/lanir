@@ -72,7 +72,6 @@ var Character = function(options) {
 			newValue = !!change;
 		} else {
 			// numeric change can be reset, plus and minus
-			var m;
 			if(change.match(/^\++$/)) {
 				// ++ = add 2
 				change = change.length;
