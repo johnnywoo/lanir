@@ -57,7 +57,6 @@ $only_load_once   = !empty($_REQUEST['only_load_once']);
 // Battle mode:
 // initiative and rounds, who acted this round (with regards to inactive tokens)
 // select a char token to show roll to hit on all other tokens
-// char property editing
 // char inventory and current weapon selection
 
 

@@ -1,8 +1,12 @@
 var Character = function(options) {
-	this.name = '';
+	this.name         = '';
 	/** @type {Token} */
-	this.token = null;
+	this.token        = null;
 	this.tokenOptions = {};
+	/** @type {jQuery} */
+	this.$editor      = null;
+	/** @type {function} */
+	this.onchange     = null; // function(param, value)
 	this.params = {
 		str: 10,
 		dex: 10,
@@ -17,13 +21,19 @@ var Character = function(options) {
 		unconscious: false,
 
 		inactive: false,
-		ready: true
+		ready: true,
+		isPC: false
 	};
+
 	$.extend(this, options || {});
 
 	var t = this;
 
-	this.$editor = $('<div class="character-editor" />');
+
+
+	//
+	// PUBLIC INTERFACE
+	//
 
 	this.render = function() {
 		t.$editor.empty();
@@ -55,6 +65,76 @@ var Character = function(options) {
 			t.$editor.append($block);
 		});
 	};
+
+	this.change = function(param, change, noCallback) {
+		var newValue = null;
+		if(typeof t.params[param] == 'boolean') {
+			newValue = !!change;
+		} else {
+			// numeric change can be reset, plus and minus
+			var m;
+			if(change.match(/^\++$/)) {
+				// ++ = add 2
+				change = change.length;
+			} else if(change.match(/^-+$/)) {
+				// -- = subtract 2
+				change = -change.length;
+			} else if(change.match(/^[+-][0-9]+$/)) {
+				// +3 = add 3
+				// @todo here we should be able to do +1d6 and auto-roll (with the roll appearing in some form of log/window)
+				change = parseInt(change);
+			} else {
+				// 3 = set to 3
+				change = parseInt(change) - t.params[param];
+			}
+
+			newValue = t.params[param] + change;
+		}
+
+		if(t.params[param] != newValue) {
+			t.params[param] = newValue;
+			setInputValue(param, newValue);
+			t.onchange && !noCallback && t.onchange(param, newValue);
+		}
+
+		return newValue;
+	};
+
+
+
+	//
+	// INITIALIZATION
+	//
+
+	var setInputValue = function(param, value) {
+		var $inp = t.$editor.find('[name='+param+']');
+		if(typeof value == 'boolean') {
+			$inp.attr('checked', value);
+		} else {
+			$inp.val(value);
+		}
+	};
+
+	this.$editor = $('<div class="character-editor" />');
+
+	var applyChanges = function(inp) {
+		var $inp = $(inp);
+		var param = $inp.attr('name');
+		if(typeof t.params[param] != 'undefined') {
+			t.change(param, $inp.val());
+		}
+	};
+
+	this.$editor
+		.keyup(function(e) {
+			if(e.target.nodeName == 'INPUT' && e.which == 13) {
+				applyChanges(e.target);
+				e.target.select();
+			}
+		})
+		.change(function(e) {
+			applyChanges(e.target);
+		});
 
 	this.render();
 };
