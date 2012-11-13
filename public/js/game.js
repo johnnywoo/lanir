@@ -39,10 +39,18 @@ var Game = function(options) {
 	var addCharacter = function(name, options, kind) {
 		characters[name] = new Character({
 			name:         name,
-			tokenOptions: options
+			tokenOptions: options,
+			onchange: function(param, value) {
+				t.log.pushPostFactum({
+					command: 'set',
+					name:    name,
+					param:   param,
+					value:   value
+				});
+			}
 		});
 		if(kind == 'pc') {
-			characters[name].change('isPC', true);
+			characters[name].set('isPC', true);
 		}
 	};
 	var forEachChar = function(data, callback) {
@@ -103,6 +111,13 @@ var Game = function(options) {
 			var token = characters[entry.name].token;
 			if(token) {
 				token.move(entry.place);
+			}
+		}
+
+		if(entry.command == 'set') {
+			var character = characters[entry.name];
+			if(character) {
+				character.set(entry.param, entry.value);
 			}
 		}
 	};

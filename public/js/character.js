@@ -6,7 +6,7 @@ var Character = function(options) {
 	/** @type {jQuery} */
 	this.$editor      = null;
 	/** @type {function} */
-	this.onchange     = null; // function(param, value)
+	this.onchange     = null; // function(param, value, oldValue); is called when the change comes from UI (.set()/.change() do not call it)
 	this.params = {
 		str: 10,
 		dex: 10,
@@ -35,40 +35,48 @@ var Character = function(options) {
 	// PUBLIC INTERFACE
 	//
 
-	this.render = function() {
-		t.$editor.empty();
-
-		// editor title
-		t.$editor.append($('<form class="character-name" />').text(t.name));
-
-		// params
-		$.each(t.params, function(param, value) {
-			var $block = $('<div />');
-
-			switch(typeof value) {
-				case 'boolean':
-					$block.append(
-						$('<label />')
-							.append($('<input type="checkbox" />').attr({name: param, checked: value}))
-							.append($('<span />').text(' ' + param))
-					);
-					break;
-				case 'number':
-					$block
-						.append($('<span class="prefix" />').text(param + ' '))
-						.append($('<input type="text" class="number" />').attr({name: param, value: value}));
-					break;
-				default: // text
-					$block.text('Lolwut? '+param);
-			}
-
-			t.$editor.append($block);
-		});
+	/**
+	 * Sets a new value for a character param
+	 *
+	 * @param {string} param
+	 * @param value
+	 */
+	this.set = function(param, value) {
+		if(typeof value != 'boolean') {
+			value = '=' + value; // this way negative numbers don't count as changes
+		}
+		changeParam(param, value);
 	};
 
-	this.change = function(param, change, noCallback) {
+	/**
+	 * Modifies a param value
+	 *
+	 * Change can be:
+	 * '+', '++', '-', '--' for increment/decrement
+	 * '+1', '-5' for arithmetic modification
+	 * '5', '=-1' for resetting
+	 *
+	 * @param {string} param
+	 * @param change
+	 */
+	this.change = function(param, change) {
+		changeParam(param, change);
+	};
+
+
+
+	//
+	// IMPLEMENTATION
+	//
+
+	var changeParam = function(param, change, callback) {
+		if(typeof t.params[param] == 'undefined') {
+			return;
+		}
+
 		var newValue = null;
-		if(typeof t.params[param] == 'boolean') {
+		var oldValue = t.params[param];
+		if(typeof oldValue == 'boolean') {
 			newValue = !!change;
 		} else {
 			// numeric change can be reset, plus and minus
@@ -82,28 +90,23 @@ var Character = function(options) {
 				// +3 = add 3
 				// @todo here we should be able to do +1d6 and auto-roll (with the roll appearing in some form of log/window)
 				change = parseInt(change);
+			} else if(change.match(/^=/)) {
+				// =3 = set to 3
+				change = parseInt(change.substring(1)) - oldValue;
 			} else {
 				// 3 = set to 3
-				change = parseInt(change) - t.params[param];
+				change = parseInt(change) - oldValue;
 			}
 
-			newValue = t.params[param] + change;
+			newValue = oldValue + change;
 		}
 
-		if(t.params[param] != newValue) {
+		if(oldValue != newValue) {
 			t.params[param] = newValue;
 			setInputValue(param, newValue);
-			t.onchange && !noCallback && t.onchange(param, newValue);
+			callback && callback(param, newValue, oldValue);
 		}
-
-		return newValue;
 	};
-
-
-
-	//
-	// INITIALIZATION
-	//
 
 	var setInputValue = function(param, value) {
 		var $inp = t.$editor.find('[name='+param+']');
@@ -114,17 +117,20 @@ var Character = function(options) {
 		}
 	};
 
-	this.$editor = $('<div class="character-editor" />');
-
 	var applyChanges = function(inp) {
 		var $inp = $(inp);
-		var param = $inp.attr('name');
-		if(typeof t.params[param] != 'undefined') {
-			t.change(param, $inp.val());
-		}
+		changeParam($inp.attr('name'), $inp.val(), t.onchange);
 	};
 
-	this.$editor
+
+
+	//
+	// INITIALIZATION
+	//
+
+	t.$editor = $('<div class="character-editor" />');
+
+	t.$editor
 		.keyup(function(e) {
 			if(e.target.nodeName == 'INPUT' && e.which == 13) {
 				applyChanges(e.target);
@@ -135,5 +141,32 @@ var Character = function(options) {
 			applyChanges(e.target);
 		});
 
-	this.render();
+	t.$editor.empty();
+
+	// editor title
+	t.$editor.append($('<form class="character-name" />').text(t.name));
+
+	// params
+	$.each(t.params, function(param, value) {
+		var $block = $('<div />');
+
+		switch(typeof value) {
+			case 'boolean':
+				$block.append(
+					$('<label />')
+						.append($('<input type="checkbox" />').attr({name: param, checked: value}))
+						.append($('<span />').text(' ' + param))
+				);
+				break;
+			case 'number':
+				$block
+					.append($('<span class="prefix" />').text(param + ' '))
+					.append($('<input type="text" class="number" />').attr({name: param, value: value}));
+				break;
+			default: // text
+				$block.text('Lolwut? '+param);
+		}
+
+		t.$editor.append($block);
+	});
 };

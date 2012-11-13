@@ -36,11 +36,11 @@ $only_load_once   = !empty($_REQUEST['only_load_once']);
 // to do
 //
 // describe all characters in one place in game config, use lists of names in other places?
-// separate config sections for characters and their tokens on the map?
-// ('token' is exclusively map UI element, token config = representation;
-// for non-character things like blood use 'objects';
-// token config should have image/text/color info)
 // think about problems with making actions while log is loading (should not be an issue with one GM and readonly players)
+
+// map config: fog enabled/disabled; separate token entries in map config: {name: {place: [], size: []}} (so characters can start in correct places on each map)
+// token config should be created by extending compatible things from global config, map config and character/item config (no more 'images' map)
+
 
 
 // ESSENTIAL:
@@ -56,7 +56,7 @@ $only_load_once   = !empty($_REQUEST['only_load_once']);
 //
 // Battle mode:
 // initiative and rounds, who acted this round (with regards to inactive tokens)
-// select a char token to show roll to hit on all other tokens
+// select char, press 'a' (every token shows attack score), click target: if PC, ask for damage; if NPC, auto roll and set everything
 // char inventory and current weapon selection
 
 
