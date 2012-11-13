@@ -2,7 +2,7 @@ html, body {margin: 0; padding: 0}
 body {background: gray; overflow: hidden}
 form {margin: 0; padding: 0}
 
-#canvas {height: 100%; width: 100%; position: relative}
+#canvas {height: 100%; width: 100%; position: absolute}
 
 .readonly-mode #sidebar {display: none}
 .readonly-mode {padding-right: 0}
