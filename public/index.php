@@ -49,7 +49,15 @@ $only_load_once   = !empty($_REQUEST['only_load_once']);
 // dealing with multiple tokens on the same square
 // drawing HP on tokens
 // drawing conditions on tokens
-// fog of war: proper dnd trigonometry, remembering previously seen places, hidden tokens, sync of fog refreshing on server, black map before first refresh, only count PCs as seeing tokens; prevent page search from popping up on ctrl+f
+//
+// Fog of war:
+// proper dnd trigonometry
+// remembering previously seen places
+// tokens hidden under the fog
+// sync of fog refreshing on server
+// black map before first refresh
+// only count PCs as seeing tokens
+// prevent page search from popping up on ctrl+f
 //
 // General everything features:
 // real-time remote pointer
@@ -57,7 +65,16 @@ $only_load_once   = !empty($_REQUEST['only_load_once']);
 // Battle mode:
 // initiative and rounds, who acted this round (with regards to inactive tokens)
 // select char, press 'a' (every token shows attack score), click target: if PC, ask for damage; if NPC, auto roll and set everything
+// select char, press 'd' to damage/heal (with negative number?) with popup asking for a number/dice (buttons for predefined dice for e.g. spells)
 // char inventory and current weapon selection
+//
+// Character editor:
+// HP/max HP
+// roll table? like 'perception: 5 ok, 10 good, 15 very good' or just 'perception +5'
+// inventory (display items, allow checkboxes like 'equipped' and 'used')
+// weapons separate from items, click on 'equipped' should remove it from other weapons (spells are weapons too)
+// inventory edit mode (a textarea with simple syntax so we can add items like plate armor etc)
+// (candy) separate modes for editing/viewing so we can see bonuses on stats etc?
 
 
 // NOT ESSENTIAL:
