@@ -34,9 +34,16 @@ var Game = function(options) {
 	});
 
 	// populating characters
+	/** @type {Array.<Character>} */
 	var characters = {};
-	var addCharacter = function(name, options) {
-		characters[name] = new Character({name: name, tokenOptions: options});
+	var addCharacter = function(name, options, kind) {
+		characters[name] = new Character({
+			name:         name,
+			tokenOptions: options
+		});
+		if(kind == 'pc') {
+			characters[name].change('isPC', true);
+		}
 	};
 	var forEachChar = function(data, callback) {
 		data.pc && $.each(data.pc, function(k, v) { callback(k, v, 'pc'); });
