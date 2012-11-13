@@ -39,8 +39,13 @@ var Game = function(options) {
 	var addCharacter = function(name, options, kind) {
 		characters[name] = new Character({
 			name:         name,
-			tokenOptions: options,
-			onchange: function(param, value) {
+			tokenOptions: options
+		});
+		if(kind == 'pc') {
+			characters[name].set('isPC', true);
+		}
+		if(!t.isReadonlyMode) {
+			characters[name].onchange = function(param, value) {
 				t.log.pushPostFactum({
 					command: 'set',
 					name:    name,
@@ -48,9 +53,6 @@ var Game = function(options) {
 					value:   value
 				});
 			}
-		});
-		if(kind == 'pc') {
-			characters[name].set('isPC', true);
 		}
 	};
 	var forEachChar = function(data, callback) {
