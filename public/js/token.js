@@ -48,6 +48,14 @@ var Token = function(options) {
 		toggleBadge(name, (arguments.length > 1) ? isEnabled : true);
 	};
 
+	/**
+	 * @param {number} hp
+	 * @param {number} maxHP default 100
+	 */
+	this.setHP = function(hp, maxHP) {
+		setHP(parseInt(hp / ((arguments.length > 1) ? maxHP / 100 : 1)));
+	};
+
 
 
 	//
@@ -78,6 +86,17 @@ var Token = function(options) {
 			badges.splice(pos, 1);
 			t.render();
 		}
+	};
+
+	var hpClass = '';
+	var setHP = function(percents) {
+		if(percents > 99)      hpClass = 'hp-max';
+		else if(percents > 50) hpClass = 'hp-high';
+		else if(percents > 20) hpClass = 'hp-medium';
+		else if(percents > 0)  hpClass = 'hp-low';
+		else                   hpClass = 'hp-awful';
+
+		t.render();
 	};
 
 	var move = function(place) {
@@ -129,11 +148,24 @@ var Token = function(options) {
 		});
 
 		if(t.name) {
-			t.$box.append($('<span class="token-name" />').append($('<span />').text(t.name)));
+			t.$box.append(
+				$('<span class="token-name" />')
+					.addClass(hpClass)
+					.append(
+						$('<span />')
+							.text(t.name)
+					)
+			);
 		}
 
 		if(t.counter) {
-			t.$box.append($('<span class="token-counter" />').append($('<span />').text(t.counter)));
+			t.$box.append(
+				$('<span class="token-counter" />')
+					.append(
+						$('<span />')
+							.text(t.counter)
+					)
+			);
 		}
 	};
 
