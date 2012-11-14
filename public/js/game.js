@@ -25,27 +25,39 @@ var Game = function(options) {
 		alert('No map!');
 		throw 'Bleeeegh';
 	}
-	var mapData = t.data.maps[t.data.current_map];
-
 	$.each(t.data.maps, function(k, v) {
 		if(!v.name) {
 			v.name = k;
 		}
 	});
 
+	// config is the global data extended with current map data
+	var config = {};
+	$.extend(true, config, t.data, t.data.maps[t.data.current_map]);
+
 	// populating characters
 	/** @type {Object.<string, Character>} */
 	var characters = {};
 	var addCharacter = function(name, options, kind) {
-		characters[name] = new Character({
-			name:         options.name || name,
-			tokenOptions: options
-		});
+		// default char options
+		var fullName = options.name || name;
+		delete options.name;
 		if(kind == 'pc') {
-			characters[name].set('isPC', true);
+			options.isPC = true;
 		}
+
+		// token options
+		var tokenOptions = config.tokens[name] || {};
+		tokenOptions.name = tokenOptions.name || fullName;
+
+		// char init
+		characters[name] = new Character({
+			name:         fullName,
+			tokenOptions: tokenOptions
+		});
+		$.each(options, characters[name].change);
 		if(!t.isReadonlyMode) {
-			characters[name].onchange = function(param, value) {
+			characters[name].onuichange = function(param, value) {
 				t.log.pushPostFactum({
 					command: 'set',
 					name:    name,
@@ -55,19 +67,15 @@ var Game = function(options) {
 			}
 		}
 	};
-	var forEachChar = function(data, callback) {
-		data.pc && $.each(data.pc, function(k, v) { callback(k, v, 'pc'); });
-		data.npc && $.each(data.npc, function(k, v) { callback(k, v, 'npc'); });
-	};
-	forEachChar(t.data, addCharacter);
-	forEachChar(mapData, addCharacter);
+	config.pc  && $.each(config.pc,  function(k, v) { addCharacter(k, v, 'pc');  });
+	config.npc && $.each(config.npc, function(k, v) { addCharacter(k, v, 'npc'); });
 
 
 	// creating the map
 	this.map = new Map({
 		$container:    t.$mapContainer,
-		size:          mapData.size, // hor, ver
-		mapImage:      mapData.image,
+		size:          config.size, // hor, ver
+		mapImage:      config.image,
 		movableTokens: !t.isReadonlyMode,
 
 		onselect: function(id, prevId) {
@@ -85,11 +93,7 @@ var Game = function(options) {
 	var mapIdToName = {};
 	$.each(characters, function(name, character) {
 		// map token
-		if(t.data.images[name]) {
-			character.tokenOptions.image = t.data.images[name];
-		}
-		var id = t.map.addToken(new Token(character.tokenOptions));
-		character.token = t.map.getToken(id);
+		var id = t.map.addToken(character.createToken());
 		mapIdToName[id] = name;
 
 		// editor

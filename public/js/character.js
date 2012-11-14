@@ -6,7 +6,7 @@ var Character = function(options) {
 	/** @type {jQuery} */
 	this.$editor      = null;
 	/** @type {function} */
-	this.onchange     = null; // function(param, value, oldValue); is called when the change comes from UI (.set()/.change() do not call it)
+	this.onuichange   = null; // function(param, value, oldValue); is called when the change comes from UI (.set()/.change() do not call it)
 	this.params = {
 		str: 10,
 		dex: 10,
@@ -61,6 +61,11 @@ var Character = function(options) {
 	 */
 	this.change = function(param, change) {
 		changeParam(param, change);
+	};
+
+	this.createToken = function() {
+		t.token = new Token(t.tokenOptions);
+		return t.token;
 	};
 
 
@@ -119,7 +124,7 @@ var Character = function(options) {
 
 	var applyChanges = function(inp) {
 		var $inp = $(inp);
-		changeParam($inp.attr('name'), $inp.val(), t.onchange);
+		changeParam($inp.attr('name'), $inp.val(), t.onuichange);
 	};
 
 

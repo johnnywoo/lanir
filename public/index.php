@@ -38,9 +38,6 @@ $only_load_once   = !empty($_REQUEST['only_load_once']);
 // describe all characters in one place in game config, use lists of names in other places?
 // think about problems with making actions while log is loading (should not be an issue with one GM and readonly players)
 
-// map config: fog enabled/disabled; separate token entries in map config: {name: {place: [], size: []}} (so characters can start in correct places on each map)
-// token config should be created by extending compatible things from global config, map config and character/item config (no more 'images' map)
-
 
 
 // ESSENTIAL:
@@ -102,6 +99,7 @@ $only_load_once   = !empty($_REQUEST['only_load_once']);
 // list of standard unicode/shape-based token representations (for status effects, actual tokens, etc)
 // optionally drawing a grid (color in the map settings) as one element (or at most w+h instead of w*h); we need the grid to be visible to align it to the drawn grid on the map
 // doctoring of the applied log? we can have a very large amount of move commands because every select is a move, so the log will tend to become enormous (and we need the moves to keep proper z-index on tokens)
+// map config: fog enabled/disabled (maybe for some locations like safe towns/taverns we don't need the fog)
 
 // dealing with multiple tokens on the same square:
 // mark such squares with some icon (how do we deal with big tokens?)

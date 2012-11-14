@@ -28,13 +28,15 @@ function load_game_data($folder)
 		if(preg_match('/^map[_-](.*?)[_-](\d+)x(\d+)\.[a-z]+$/', $name, $m))
 		{
 			$data['maps'][$m[1]]['image'] = make_temporary_public_file($pic);
-			$data['maps'][$m[1]]['size']  = array($m[2], $m[3]);
+			$data['maps'][$m[1]]['size']  = array((int) $m[2], (int) $m[3]);
 		}
 		else if(preg_match('/^token[_-](.*?)(?:[_-](\d+)x(\d+))?\.[a-z]+$/', $name, $m))
 		{
 			$tmp_pic_file = make_temporary_public_file($pic);
 
-			$data['images'][$m[1]] = $tmp_pic_file;
+			$data['tokens'][$m[1]]['image'] = $tmp_pic_file;
+			if($m[2])
+				$data['tokens'][$m[1]]['size'] = array((int) $m[2], (int) $m[3]);
 		}
 	}
 
