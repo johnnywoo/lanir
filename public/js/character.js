@@ -136,6 +136,11 @@ var Character = function(options) {
 	t.$editor = $('<div class="character-editor" />');
 
 	t.$editor
+		.bind('focus click', function(e) {
+			if(e.target.nodeName == 'INPUT') {
+				e.target.select();
+			}
+		})
 		.keyup(function(e) {
 			if(e.target.nodeName == 'INPUT' && e.which == 13) {
 				applyChanges(e.target);
