@@ -35,6 +35,8 @@ var Game = function(options) {
 	var config = {};
 	$.extend(true, config, t.data, t.data.maps[t.data.current_map]);
 
+	Token.defaultTokenOptions = config.tokens;
+
 	// populating characters
 	/** @type {Object.<string, Character>} */
 	var characters = {};

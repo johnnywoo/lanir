@@ -24,6 +24,7 @@ var Character = function(options) {
 		ready: true,
 		isPC: false
 	};
+	this.paramsWithBadges = ['dead', 'unconscious'];
 
 	$.extend(this, options || {});
 
@@ -65,6 +66,12 @@ var Character = function(options) {
 
 	this.createToken = function() {
 		t.token = new Token(t.tokenOptions);
+		// init badges
+		$.each(t.paramsWithBadges, function(i, param) {
+			if(t.params[param]) {
+				t.token.toggleBadge(param, t.params[param]);
+			}
+		});
 		return t.token;
 	};
 
@@ -109,7 +116,14 @@ var Character = function(options) {
 		if(oldValue != newValue) {
 			t.params[param] = newValue;
 			setInputValue(param, newValue);
+
+			// possible onuichange call
 			callback && callback(param, newValue, oldValue);
+
+			// updating the token
+			if(t.token && $.inArray(param, t.paramsWithBadges) > -1) {
+				t.token.toggleBadge(param, newValue);
+			}
 		}
 	};
 
@@ -124,7 +138,7 @@ var Character = function(options) {
 
 	var applyChanges = function(inp) {
 		var $inp = $(inp);
-		changeParam($inp.attr('name'), $inp.val(), t.onuichange);
+		changeParam($inp.attr('name'), $inp.is(':checkbox') ? $inp.attr('checked') : $inp.val(), t.onuichange);
 	};
 
 

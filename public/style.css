@@ -39,23 +39,28 @@ z-index levels:
 .token {z-index: 10}
 .over-tokens {z-index: 50}
 
-/* zoom levels (applied to .map-canvas) */
-.map-zoom-out {}
-.map-zoom-in {}
-.map-zoom-microscope {}
-
 .tokens {position: absolute; height: 100%; width: 100%;}
-.token {position: absolute}
+	.token {position: absolute}
+		.token-body {-moz-box-sizing: border-box; -webkit-box-sizing: border-box; height: 100%; width: 100%; font-size: 80%; text-align: center; vertical-align: middle; border-radius: 50%; border: 0.1em silver solid; font-family: serif; cursor: default}
+	.token-name {font-size: 0.17em; position: absolute; bottom: 0; left: 0; right: 0; text-align: center;}
+		.token-name span {background: ivory; border: 1px gray solid; border-radius: 0.35em; color: black; padding: 0 0.3em; font-family: sans-serif}
+	.token-counter {position: absolute; top: 0; left: 0; width: 100%; height: 100%; text-align: center; display: table-cell; vertical-align: middle}
+		.token-counter span {position: absolute; top: 17%; bottom: 17%; left: 10%; right: 10%; font-size: 0.5em; background: ivory; border: 1px black solid; border-radius: 0.35em; color: black; font-family: sans-serif; padding: 0 0.1em;}
+	.token-badges {position: absolute; left: 0; width: 100%; top: 0; height: 0.77em;}
+		.token-badge {float: right; width: 0.33em; height: 0.33em}
 
-.token-text-body, .token-image-body {-moz-box-sizing: border-box; -webkit-box-sizing: border-box; height: 100%; width: 100%; font-size: 80%; text-align: center; vertical-align: middle; border-radius: 50%; border: 0.1em silver solid; font-family: serif; cursor: default}
-.token-name {font-size: 0.2em; position: absolute; bottom: 0; left: 0; right: 0}
-	.token-name span {background: ivory; border: 1px gray solid; border-radius: 0.35em; color: black; padding: 0 0.3em; font-family: sans-serif}
-.token-counter {position: absolute; top: 0; left: 0; width: 100%;}
-	.token-counter span {display:inline-block; margin-top: -0.6em; font-size: 0.5em; background: ivory; border: 1px black solid; border-radius: 0.35em; color: black; font-family: sans-serif; padding: 0 0.1em}
+/* zoom levels (applied to .map-canvas) */
 .map-zoom-out .token-name {display: none}
-.map-zoom-microscope .token-name {font-size: 0.15em}
+.map-zoom-out .token-badges {height: 1em}
 
-.token-selected .token-text-body, .token-selected .token-image-body {border-color: #00bfff}
+.map-zoom-in {}
+
+.map-zoom-microscope .token-name {font-size: 0.12em}
+.map-zoom-microscope .token-badges {height: 0.84em}
+.map-zoom-microscope .token-badge {float: right; width: 0.15em; height: 0.25em; width: 0.25em}
+
+
+.token-selected .token-body {border-color: #00bfff}
 
 
 

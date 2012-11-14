@@ -12,6 +12,7 @@ var Token = function(options) {
 
 	var t = this;
 	var visibleArea = [];
+	var badges = [];
 
 
 
@@ -43,6 +44,10 @@ var Token = function(options) {
 		return visibleArea;
 	};
 
+	this.toggleBadge = function(name, isEnabled) {
+		toggleBadge(name, (arguments.length > 1) ? isEnabled : true);
+	};
+
 
 
 	//
@@ -62,6 +67,19 @@ var Token = function(options) {
 		}
 	};
 
+	var toggleBadge = function(name, isEnabled) {
+		var pos = $.inArray(name, badges);
+		if(isEnabled) {
+			if(pos == -1) {
+				badges.push(name);
+				t.render();
+			}
+		} else if(pos > -1) {
+			badges.splice(pos, 1);
+			t.render();
+		}
+	};
+
 	var move = function(place) {
 		t.place = place.slice(0);
 		t.$box.css({
@@ -71,40 +89,57 @@ var Token = function(options) {
 		calculateVisibleArea();
 	};
 
+	var setTokenStyle = function($box, options) {
+		if(options.image != '') {
+			// image-based token
+			$box.css('background', 'url("' + options.image + '") left top no-repeat');
+			$box.css('background-size', '100% 100%');
+		} else {
+			// text-based token
+			$box.text(options.text || options.name.substring(0, 1));
+			$box.css('background-color', options.color);
+			$box.css('color', 'white');
+		}
+	};
+
 	var render = function() {
 		var $inner;
 
-		t.$box.css({
-			width:  t.size[0] + 'em',
-			height: t.size[1] + 'em',
-			left:   t.place[0] + 'em',
-			top:    t.place[1] + 'em'
+		t.$box
+			.empty()
+			.css({
+				width:  t.size[0] + 'em',
+				height: t.size[1] + 'em',
+				left:   t.place[0] + 'em',
+				top:    t.place[1] + 'em'
+			});
+
+		$inner = $('<div class="token-body" />');
+		setTokenStyle($inner, t);
+		t.$box.append($inner);
+
+		var $badges = $('<div class="token-badges" />');
+		t.$box.append($badges);
+		$.each(badges, function(i, name) {
+			var $badge = $('<div class="token-badge" />');
+			if(Token.defaultTokenOptions[name]) {
+				setTokenStyle($badge, Token.defaultTokenOptions[name] || {name: name});
+			}
+			$badges.append($badge);
 		});
 
-		if(t.image != '') {
-			// image-based token
-			$inner = $('<div class="token-image-body" />');
-			$inner.css('background', 'url("' + t.image + '") left top no-repeat');
-			$inner.css('background-size', '100% 100%');
-		} else {
-			// text-based token
-			$inner = $('<div class="token-text-body" />');
-			$inner.text(t.text || t.name.substring(0, 1));
-			$inner.css('background-color', t.color);
-			$inner.css('color', 'white');
-		}
-
 		if(t.name) {
-			$inner.append($('<span class="token-name" />').append($('<span />').text(t.name)));
+			t.$box.append($('<span class="token-name" />').append($('<span />').text(t.name)));
 		}
 
 		if(t.counter) {
-			$inner.append($('<span class="token-counter" />').append($('<span />').text(t.counter)));
+			t.$box.append($('<span class="token-counter" />').append($('<span />').text(t.counter)));
 		}
-
-		t.$box.empty().append($inner);
 	};
 
+	// the box should remain on render, so we can have event handlers on it
 	t.$box = $('<div class="token" />');
 	t.render();
 };
+
+Token.defaultTokenOptions = {};

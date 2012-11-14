@@ -45,7 +45,6 @@ $only_load_once   = !empty($_REQUEST['only_load_once']);
 // General map features:
 // dealing with multiple tokens on the same square
 // drawing HP on tokens
-// drawing conditions on tokens
 //
 // Fog of war:
 // proper dnd trigonometry
@@ -100,6 +99,7 @@ $only_load_once   = !empty($_REQUEST['only_load_once']);
 // optionally drawing a grid (color in the map settings) as one element (or at most w+h instead of w*h); we need the grid to be visible to align it to the drawn grid on the map
 // doctoring of the applied log? we can have a very large amount of move commands because every select is a move, so the log will tend to become enormous (and we need the moves to keep proper z-index on tokens)
 // map config: fog enabled/disabled (maybe for some locations like safe towns/taverns we don't need the fog)
+// drawing condition icons in character editor
 
 // dealing with multiple tokens on the same square:
 // mark such squares with some icon (how do we deal with big tokens?)
