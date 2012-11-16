@@ -43,6 +43,22 @@ var Item = function(options, base) {
 		return s;
 	};
 
+	this.get = function(param) {
+		if(typeof t.params[param] == 'undefined') {
+			return null;
+		}
+
+		return t.params[param];
+	};
+
+	this.set = function(param, value) {
+		if(typeof t.params[param] == 'undefined') {
+			return;
+		}
+
+		t.params[param] = value;
+	};
+
 
 
 	//

@@ -26,6 +26,7 @@ var Character = function(options) {
 		isPC: false
 	};
 	this.paramsWithBadges = ['dead', 'unconscious'];
+	/** @type {Array.<Item>} */
 	this.items = [];
 
 	$.extend(this, options || {});
@@ -89,40 +90,68 @@ var Character = function(options) {
 	// IMPLEMENTATION
 	//
 
+	var changeValue = function(oldValue, change) {
+		if(typeof oldValue == 'boolean') {
+			return !!change;
+		}
+
+		// numeric change can be reset, plus and minus
+		if(change.match(/^\++$/)) {
+			// ++ = add 2
+			change = change.length;
+		} else if(change.match(/^-+$/)) {
+			// -- = subtract 2
+			change = -change.length;
+		} else if(change.match(/^[+-][0-9]+$/)) {
+			// +3 = add 3
+			// @todo here we should be able to do +1d6 and auto-roll (with the roll appearing in some form of log/window)
+			change = parseInt(change);
+		} else if(change.match(/^=/)) {
+			// =3 = set to 3
+			change = parseInt(change.substring(1)) - oldValue;
+		} else {
+			// 3 = set to 3
+			change = parseInt(change) - oldValue;
+		}
+
+		return oldValue + change;
+	};
+
+	var setItemParam = function(id, param, value) {
+		var item = t.items[id];
+		item.set(param, value);
+		if(param == 'equipped' && value && item.isWeapon()) {
+			// unequip other weapons
+			for(var i = 0; i < t.items.length; i++) {
+				if(i != id && t.items[i].isWeapon()) {
+					changeParam('item__' + i + '__' + param, false);
+				}
+			}
+		}
+	};
+
 	var changeParam = function(param, change, callback) {
-		if(typeof t.params[param] == 'undefined') {
+		var oldValue = null;
+		var set = null;
+		if(typeof t.params[param] != 'undefined') {
+			// char param
+			oldValue = t.params[param];
+			set = function(x) {t.params[param] = x};
+		} else if(param.match(/^item__/)) {
+			// item param
+			var m = param.match(/^item__(\d+)__(.*)$/);
+			if(t.items[m[1]]) {
+				oldValue = t.items[m[1]].get(m[2]);
+				set = function(x) {setItemParam(m[1], m[2], x)};
+			}
+		} else {
 			return;
 		}
 
-		var newValue = null;
-		var oldValue = t.params[param];
-		if(typeof oldValue == 'boolean') {
-			newValue = !!change;
-		} else {
-			// numeric change can be reset, plus and minus
-			if(change.match(/^\++$/)) {
-				// ++ = add 2
-				change = change.length;
-			} else if(change.match(/^-+$/)) {
-				// -- = subtract 2
-				change = -change.length;
-			} else if(change.match(/^[+-][0-9]+$/)) {
-				// +3 = add 3
-				// @todo here we should be able to do +1d6 and auto-roll (with the roll appearing in some form of log/window)
-				change = parseInt(change);
-			} else if(change.match(/^=/)) {
-				// =3 = set to 3
-				change = parseInt(change.substring(1)) - oldValue;
-			} else {
-				// 3 = set to 3
-				change = parseInt(change) - oldValue;
-			}
-
-			newValue = oldValue + change;
-		}
+		var newValue = changeValue(oldValue, change);
 
 		if(oldValue != newValue) {
-			t.params[param] = newValue;
+			set(newValue);
 			setInputValue(param, newValue);
 
 			// possible onuichange call
@@ -227,13 +256,22 @@ var Character = function(options) {
 	var $itemsBox = $('<div class="character-items" />');
 	t.$editor.append($itemsBox);
 	var addItemEditor = function(id, item) {
+		// creating the box (no flexible parameters for now)
+		var inputName = 'item__' + id + '__equipped';
 		$itemsBox.append(
 			$('<div class="item-editor" />')
 				.toggleClass('item-is-weapon', item.isWeapon())
 				.append($('<span class="item-name" />').text(item.name()))
 				.append(' ')
 				.append($('<span class="item-summary" />').text(item.summary()))
+				.append($('<div />').append(
+					$('<label />')
+						.append($('<input type="checkbox" />').attr('name', inputName))
+						.append(' equipped')
+				))
 		);
+		// setting input values
+		setInputValue(inputName, item.get('equipped'));
 	};
 
 	// installing param values

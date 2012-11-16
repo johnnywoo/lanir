@@ -90,6 +90,7 @@ z-index levels:
 
 	.item-editor {border-left: 2px blue solid; padding-left: 0.2em; margin: 0.2em 0;}
 	.item-editor.item-is-weapon {border-color: maroon;}
+		.item-editor .item-name {font-weight: bold}
 
 input.number {width: 50px}
 

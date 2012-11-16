@@ -68,10 +68,6 @@ $only_load_once   = !empty($_REQUEST['only_load_once']);
 // Character editor:
 // HP/max HP
 // roll table? like 'perception: 5 ok, 10 good, 15 very good' or just 'perception +5'
-// inventory (display items, allow checkboxes like 'equipped' and 'used')
-// weapons separate from items, click on 'equipped' should remove it from other weapons (spells are weapons too)
-// inventory edit mode (a textarea with simple syntax so we can add items like plate armor etc)
-// (candy) separate modes for editing/viewing so we can see bonuses on stats etc?
 
 
 // NOT ESSENTIAL:
@@ -83,6 +79,14 @@ $only_load_once   = !empty($_REQUEST['only_load_once']);
 // General everything features:
 // map changing
 // displaying the log of actions and undo
+//
+// Editors:
+// unique IDs for items instead of char/pos
+// refactoring of item management code
+// proper item param management
+// adding/removing items
+// moving items between characters
+// (candy) separate modes for editing/viewing so we can see bonuses on stats etc?
 
 
 // CANDY:
