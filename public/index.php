@@ -20,16 +20,17 @@ $only_load_once   = !empty($_REQUEST['only_load_once']);
 <script type="text/javascript" src="vendor/jquery.mousewheel.js"></script>
 <script type="text/javascript" src="vendor/jquery.hotkeys.js"></script>
 
-<script type="text/javascript" src="js/drag-drop.js"></script>
-<script type="text/javascript" src="js/map-grid.js"></script>
-<script type="text/javascript" src="js/token.js"></script>
-<script type="text/javascript" src="js/shape-arrow.js"></script>
-<script type="text/javascript" src="js/map.js"></script>
-<script type="text/javascript" src="js/token-library.js"></script>
-<script type="text/javascript" src="js/game-log.js"></script>
+<script type="text/javascript" src="js/ui/drag-drop.js"></script>
+<script type="text/javascript" src="js/ui/map-grid.js"></script>
+<script type="text/javascript" src="js/ui/token.js"></script>
+<script type="text/javascript" src="js/ui/shape-arrow.js"></script>
+<script type="text/javascript" src="js/ui/map.js"></script>
+<script type="text/javascript" src="js/ui/game-log.js"></script>
+<script type="text/javascript" src="js/ui/fog-of-war.js"></script>
+
 <script type="text/javascript" src="js/game.js"></script>
+<script type="text/javascript" src="js/token-library.js"></script>
 <script type="text/javascript" src="js/character.js"></script>
-<script type="text/javascript" src="js/fog-of-war.js"></script>
 <script type="text/javascript" src="js/item.js"></script>
 <script type="text/javascript" src="js/damage.js"></script>
 
