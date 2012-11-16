@@ -56,15 +56,16 @@ $only_load_once   = !empty($_REQUEST['only_load_once']);
 // black map before first refresh
 // only count PCs as seeing tokens
 // prevent page search from popping up on ctrl+f
+// remove visibility calculation from the fog object; make it accept a callback to calculate currently visible cells, so the game logic would not be present in the universal fog object
 //
 // General everything features:
 // real-time remote pointer
 //
 // Battle mode:
 // initiative and rounds, who acted this round (with regards to inactive tokens)
-// select char, press 'a' (every token shows attack score), click target: if PC, ask for damage; if NPC, auto roll and set everything
+// battle log
+// click target in attack mode: if PC, ask for damage; if NPC, auto roll and set everything
 // select char, press 'd' to damage/heal (with negative number?) with popup asking for a number/dice (buttons for predefined dice for e.g. spells)
-// char inventory and current weapon selection
 //
 // Character editor:
 // HP/max HP
@@ -172,10 +173,14 @@ $(function() {
 	$('#centerViewBtn').click(normView);
 	$(document).bind('keydown', 'ctrl+0 meta+0', normView);
 	if(!isReadonlyMode) {
+		// fog control
 		$('#drawFogBtn').click(game.map.fog.draw);
 		$('#showFogBtn').click(game.map.fog.toggle);
 		$(document).bind('keydown', 'ctrl+f meta+f', game.map.fog.draw);
 		$(document).bind('keydown', 'f', game.map.fog.toggle);
+
+		// attack mode
+		$(document).bind('keydown', 'a', game.toggleAttackMode);
 	}
 });
 

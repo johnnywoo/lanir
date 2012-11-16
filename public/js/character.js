@@ -8,6 +8,7 @@ var Character = function(options) {
 	this.$editor      = null;
 	/** @type {function} */
 	this.onuichange   = null; // function(param, value, oldValue); is called when the change comes from UI (.set()/.change() do not call it)
+	this.onchange     = null; // function(param, value, oldValue); is called on any change in params (including items)
 	this.params = {
 		str: 10,
 		dex: 10,
@@ -17,6 +18,9 @@ var Character = function(options) {
 		cha: 10,
 
 		// hp, max-hp
+
+		// this weapon will be used if no weapon item is equipped
+		naturalWeapon: new Item({attack: 'melee', dmg: '1d4'}),
 
 		dead: false,
 		unconscious: false,
@@ -90,11 +94,113 @@ var Character = function(options) {
 		addItemEditor(id, item);
 	};
 
+	this.getCurrentWeapon = function() {
+		return getEquippedWeapon() || t.params.naturalWeapon;
+	};
+
+	this.getScore = function(name) {
+		return getScore(name);
+	};
+
+	/**
+	 * @param {Character} target
+	 */
+	this.getScoreToHit = function(target) {
+		var weapon = t.getCurrentWeapon();
+		var attackMode = weapon.resolveAttackMode(); // [score-attack score-defence]
+
+		// score to hit is defence minus attack (good attack = lower score; attack = defence -> score 0)
+		return target.getScore(attackMode[1]) - t.getScore(attackMode[0]);
+	};
+
+	/**
+	 * @param {Character} attacker
+	 */
+	this.displayAttack = function(attacker) {
+		if(!attacker) {
+			// remove the attack display
+			if(t.token) {
+				t.token.set({counter: ''});
+			}
+			return;
+		}
+
+		// display the attack counter
+		if(t.token) {
+			t.token.set({counter: attacker.getScoreToHit(t) + 10}); // if score is 0, you need to roll 10+ to hit
+		}
+	};
+
 
 
 	//
 	// IMPLEMENTATION
 	//
+
+	var getScore = function(name) {
+		var score = 0;
+
+		// scores are made from other scores
+		switch(name) {
+			case 'ac':
+				score += getScore('dex');
+				break;
+
+			case 'fortitude':
+				score += Math.max(getScore('str'), getScore('con'));
+				break;
+
+			case 'reflex':
+				score += Math.max(getScore('dex'), getScore('int'));
+				break;
+
+			case 'will':
+				score += Math.max(getScore('wis'), getScore('cha'));
+				break;
+
+			case 'perception':
+				score += getScore('wis');
+				break;
+
+			case 'memory':
+				score += getScore('wis');
+				break;
+
+			case 'religion':
+				score += getScore('wis');
+				break;
+
+			case 'arcana':
+				score += getScore('int');
+				break;
+
+			case 'diplomacy':
+				score += getScore('cha');
+				break;
+
+			case 'thievery':
+				score += getScore('dex');
+				break;
+
+			default:
+				if(typeof t.params[name] == 'number') {
+					score += t.params[name];
+				}
+		}
+
+		// equipped items can add bonuses (e.g. armor adds AC)
+		$.each(t.items, function(id, item) {
+			if(!item.get('equipped')) {
+				return;
+			}
+			var bonus = item.get(name);
+			if(bonus != null) {
+				score += bonus;
+			}
+		});
+
+		return score;
+	};
 
 	var getEquippedWeapon = function() {
 		for(var i = 0; i < t.items.length; i++) {
@@ -177,6 +283,9 @@ var Character = function(options) {
 			if(t.token && $.inArray(param, t.paramsWithBadges) > -1) {
 				t.token.toggleBadge(param, newValue);
 			}
+
+			// universal change callback (so the game can react on param changes)
+			t.onchange && t.onchange(param, newValue, oldValue);
 		}
 	};
 
@@ -225,7 +334,7 @@ var Character = function(options) {
 	// PARAM INPUTS
 	//
 
-	var alreadyDrawn = [];
+	var alreadyDrawn = ['naturalWeapon'];
 
 	// custom inputs
 	if(typeof t.params.str != 'undefined') {

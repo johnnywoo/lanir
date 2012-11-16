@@ -52,11 +52,18 @@ var Item = function(options, base) {
 	};
 
 	this.set = function(param, value) {
-		if(typeof t.params[param] == 'undefined') {
-			return;
-		}
-
 		t.params[param] = value;
+	};
+
+	this.resolveAttackMode = function() {
+		var names = {
+			melee:    ['str', 'ac'],
+			ranged:   ['dex', 'ac'],
+			spell:    ['int', 'reflex'],
+			illusion: ['int', 'reflex'],
+			holy:     ['wis', 'will']
+		};
+		return names[t.params.attack] ? names[t.params.attack] : null;
 	};
 
 
@@ -83,7 +90,7 @@ var Item = function(options, base) {
 			var curValue = t.params[param];
 
 			if(curValue instanceof Damage) {
-				if(value.charAt(0) == '+') {
+				if(typeof value == 'string' && value.charAt(0) == '+') {
 					t.params[param].add(value.substring(1));
 				} else {
 					t.params[param] = new Damage(value);

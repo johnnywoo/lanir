@@ -10,6 +10,53 @@ var Game = function(options) {
 	$.extend(this, options || {});
 
 	var t = this;
+	var isAttackMode = false;
+
+
+
+	//
+	// PUBLIC INTERFACE
+	//
+
+	this.toggleAttackMode = function() {
+		// attack mode:
+		// 1. show attack counters on everything except selected character
+		// 2. if other token is clicked, ask for damage instead of selecting it; then disable the attack mode
+
+		var attackerName = getSelectedCharacterName();
+		// no attacker = no attack mode
+		if(attackerName ? !isAttackMode : false) {
+			enableAttackMode(attackerName);
+		} else {
+			disableAttackMode();
+		}
+	};
+
+
+
+	//
+	// IMPLEMENTATION
+	//
+
+	var getSelectedCharacterName = function() {
+		return mapIdToName[t.map.selectedTokenId] || null;
+	};
+
+	var disableAttackMode = function() {
+		isAttackMode = false;
+		// disable the attack mode
+		$.each(characters, function(name, character) {
+			character.displayAttack(); // no char = remove display
+		});
+	};
+	var enableAttackMode = function(attackerName) {
+		isAttackMode = true;
+		$.each(characters, function(name, character) {
+			if(name != attackerName) {
+				character.displayAttack(characters[attackerName]);
+			}
+		});
+	};
 
 
 
@@ -56,7 +103,12 @@ var Game = function(options) {
 		characters[name] = new Character({
 			name:         fullName,
 			tokenOptions: tokenOptions,
-			baseItems:    config.base || {}
+			baseItems:    config.base || {},
+			onchange: function() {
+				if(isAttackMode) {
+					enableAttackMode(getSelectedCharacterName());
+				}
+			}
 		});
 		$.each(options, characters[name].change); // items are skipped by this
 		$.each(options.items || [], function(i, item) {
@@ -85,6 +137,8 @@ var Game = function(options) {
 		movableTokens: !t.isReadonlyMode,
 
 		onselect: function(id, prevId) {
+			disableAttackMode();
+
 			if(mapIdToName[id]) {
 				characters[mapIdToName[id]].$editor.show();
 			}
