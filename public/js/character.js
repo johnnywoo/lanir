@@ -3,6 +3,7 @@ var Character = function(options) {
 	/** @type {Token} */
 	this.token        = null;
 	this.tokenOptions = {};
+	this.baseItems    = {};
 	/** @type {jQuery} */
 	this.$editor      = null;
 	/** @type {function} */
@@ -25,6 +26,7 @@ var Character = function(options) {
 		isPC: false
 	};
 	this.paramsWithBadges = ['dead', 'unconscious'];
+	this.items = [];
 
 	$.extend(this, options || {});
 
@@ -73,6 +75,12 @@ var Character = function(options) {
 			}
 		});
 		return t.token;
+	};
+
+	this.addItem = function(options) {
+		var item = new Item(options, t.baseItems);
+		var id = t.items.push(item) - 1;
+		addItemEditor(id, item);
 	};
 
 
@@ -215,6 +223,18 @@ var Character = function(options) {
 
 		t.$editor.append($block);
 	});
+
+	var $itemsBox = $('<div class="character-items" />');
+	t.$editor.append($itemsBox);
+	var addItemEditor = function(id, item) {
+		$itemsBox.append(
+			$('<div class="item-editor" />')
+				.toggleClass('item-is-weapon', item.isWeapon())
+				.append($('<span class="item-name" />').text(item.name()))
+				.append(' ')
+				.append($('<span class="item-summary" />').text(item.summary()))
+		);
+	};
 
 	// installing param values
 	$.each(t.params, setInputValue);

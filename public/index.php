@@ -30,6 +30,8 @@ $only_load_once   = !empty($_REQUEST['only_load_once']);
 <script type="text/javascript" src="js/game.js"></script>
 <script type="text/javascript" src="js/character.js"></script>
 <script type="text/javascript" src="js/fog-of-war.js"></script>
+<script type="text/javascript" src="js/item.js"></script>
+<script type="text/javascript" src="js/damage.js"></script>
 
 <script type="text/javascript">
 
@@ -100,6 +102,7 @@ $only_load_once   = !empty($_REQUEST['only_load_once']);
 // map config: fog enabled/disabled (maybe for some locations like safe towns/taverns we don't need the fog)
 // drawing condition icons in character editor
 // fix doubleclick not working properly on checkbox labels (it should simply count as two separate clicks and no text selection should take place)
+// make gradient hp coloring instead of discrete colors
 
 // dealing with multiple tokens on the same square:
 // mark such squares with some icon (how do we deal with big tokens?)

@@ -55,9 +55,13 @@ var Game = function(options) {
 		// char init
 		characters[name] = new Character({
 			name:         fullName,
-			tokenOptions: tokenOptions
+			tokenOptions: tokenOptions,
+			baseItems:    config.base || {}
 		});
-		$.each(options, characters[name].change);
+		$.each(options, characters[name].change); // items are skipped by this
+		$.each(options.items || [], function(i, item) {
+			characters[name].addItem(item);
+		});
 		if(!t.isReadonlyMode) {
 			characters[name].onuichange = function(param, value) {
 				t.log.pushPostFactum({
