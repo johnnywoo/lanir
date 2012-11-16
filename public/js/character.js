@@ -80,6 +80,12 @@ var Character = function(options) {
 
 	this.addItem = function(options) {
 		var item = new Item(options, t.baseItems);
+
+		// items are autoequipped unless it's a weapon and we have one already equipped
+		if(!item.isWeapon() || !getEquippedWeapon()) {
+			item.set('equipped', true);
+		}
+
 		var id = t.items.push(item) - 1;
 		addItemEditor(id, item);
 	};
@@ -89,6 +95,16 @@ var Character = function(options) {
 	//
 	// IMPLEMENTATION
 	//
+
+	var getEquippedWeapon = function() {
+		for(var i = 0; i < t.items.length; i++) {
+			var item = t.items[i];
+			if(item.isWeapon() && item.get('equipped')) {
+				return item;
+			}
+		}
+		return null;
+	};
 
 	var changeValue = function(oldValue, change) {
 		if(typeof oldValue == 'boolean') {
