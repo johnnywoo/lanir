@@ -216,10 +216,16 @@ var Game = function(options) {
 					addText(character.name + ' moves ' + distance);
 				}
 				break;
+
 			case 'set':
 				var character = characters[entry.name];
+				if(!character) {
+					break;
+				}
+
+				// equipping/removing an item
 				var m = entry.param.match(/^item__(\d+)__equipped$/);
-				if(character && m) {
+				if(m) {
 					var item = character.items[m[1]];
 					if(item) {
 						var desc;
@@ -230,7 +236,14 @@ var Game = function(options) {
 						}
 						addText(character.name + desc + item.name());
 					}
+					break;
 				}
+
+				// general boolean params
+				if(typeof entry.value == 'boolean') {
+					addText(character.name + (entry.value ? ' is ' : ' now is not ') + entry.param);
+				}
+
 				break;
 		}
 	};
