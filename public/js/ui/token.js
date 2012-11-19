@@ -53,7 +53,7 @@ var Token = function(options) {
 	 * @param {number} maxHP default 100
 	 */
 	this.setHP = function(hp, maxHP) {
-		setHP(parseInt(hp / ((arguments.length > 1) ? maxHP / 100 : 1)));
+		setHP(parseInt(100 * hp / ((arguments.length > 1) ? maxHP : 100)));
 	};
 
 
