@@ -98,3 +98,6 @@ input.number {width: 50px}
 	.stats-3column label span {float: left; width: 32%; line-height: 22px;}
 	.stats-3column input {float: right; width: 20px;}
 
+.editor-hp {border: 1px black solid; border-radius: 0.3em; position: relative; height: 1.3em; font-size: 120%; font-weight: bold}
+	.editor-hp .ruler {position: absolute; left: 0; top: 0; bottom: 0}
+	.editor-hp .text {position: absolute; width: 100%; text-align: center; display: block; background: transparent !important;}

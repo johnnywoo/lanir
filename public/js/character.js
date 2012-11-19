@@ -17,7 +17,8 @@ var Character = function(options) {
 		wis: 10,
 		cha: 10,
 
-		// hp, max-hp
+		hp:    30,
+		maxHP: 30,
 
 		// this weapon will be used if no weapon item is equipped
 		naturalWeapon: new Item({attack: 'melee', dmg: '1d4'}),
@@ -79,6 +80,7 @@ var Character = function(options) {
 				t.token.toggleBadge(param, t.params[param]);
 			}
 		});
+		syncHP();
 		return t.token;
 	};
 
@@ -195,7 +197,7 @@ var Character = function(options) {
 			}
 			var bonus = item.get(name);
 			if(bonus != null) {
-				score += bonus;
+				score += parseInt(bonus);
 			}
 		});
 
@@ -286,6 +288,9 @@ var Character = function(options) {
 
 			// universal change callback (so the game can react on param changes)
 			t.onchange && t.onchange(param, newValue, oldValue);
+
+			// internal callback for interdependent params (we really need to use proper events here)
+			internalParamChange(param, newValue, oldValue);
 		}
 	};
 
@@ -301,6 +306,46 @@ var Character = function(options) {
 	var applyChanges = function(inp) {
 		var $inp = $(inp);
 		changeParam($inp.attr('name'), $inp.is(':checkbox') ? $inp.attr('checked') : $inp.val(), t.onuichange);
+	};
+
+	var internalParamChange = function(param, newValue, oldValue) {
+		switch(param) {
+			case 'con':
+				var change = 2 * (newValue - oldValue);
+				change = (change > 0) ? '+' + change : change.toString(); // either '+1' or '-1'
+				t.change('maxHP', change);
+				t.change('hp', change);
+				break;
+
+			case 'hp':
+			case 'maxHP':
+				syncHP();
+				break;
+		}
+	};
+
+	var syncHP = function() {
+		var hp    = t.getScore('hp');
+		var maxHP = t.getScore('maxHP');
+
+		var percents = Math.min(100 * hp / maxHP, 100);
+
+		// updating the editor display
+		$hpBox.find('.text').text(hp + ' / ' + maxHP);
+		$hpBox.find('.ruler').css('width', percents + '%');
+
+		var hpClass = '';
+		if(percents > 99)      hpClass = 'hp-max';
+		else if(percents > 50) hpClass = 'hp-high';
+		else if(percents > 20) hpClass = 'hp-medium';
+		else if(percents > 0)  hpClass = 'hp-low';
+		else                   hpClass = 'hp-awful';
+		$hpBox.removeClass('hp-max hp-high hp-medium hp-low hp-awful').addClass(hpClass);
+
+		// updating the token
+		if(t.token) {
+			t.token.setHP(hp, maxHP);
+		}
 	};
 
 
@@ -336,20 +381,26 @@ var Character = function(options) {
 
 	var alreadyDrawn = ['naturalWeapon'];
 
-	// custom inputs
-	if(typeof t.params.str != 'undefined') {
-		alreadyDrawn.push('str', 'dex', 'con', 'int', 'wis', 'cha');
+	// custom inputs: stats
+	alreadyDrawn.push('str', 'dex', 'con', 'int', 'wis', 'cha');
+	t.$editor.append(
+		'<div class="stats-3column">'
+		// fortitude, reflex, will
+		+ '<label><span>STR</span> <input type="text" name="str" /></label>'
+		+ '<label><span>DEX</span> <input type="text" name="dex" /></label>'
+		+ '<label><span>WIS</span> <input type="text" name="wis" /></label>'
+		+ '<label><span>CON</span> <input type="text" name="con" /></label>'
+		+ '<label><span>INT</span> <input type="text" name="int" /></label>'
+		+ '<label><span>CHA</span> <input type="text" name="cha" /></label>'
+		+ '</div>'
+	);
 
-		t.$editor.append($('<div class="stats-3column" />').html(
-			// fortitude, reflex, will
-			'<label><span>STR</span> <input type="text" name="str" /></label>'
-			+ '<label><span>DEX</span> <input type="text" name="dex" /></label>'
-			+ '<label><span>WIS</span> <input type="text" name="wis" /></label>'
-			+ '<label><span>CON</span> <input type="text" name="con" /></label>'
-			+ '<label><span>INT</span> <input type="text" name="int" /></label>'
-			+ '<label><span>CHA</span> <input type="text" name="cha" /></label>'
-		));
-	}
+	// custom inputs: hp
+	alreadyDrawn.push('hp', 'maxHP');
+	var $hpBox = $('<div class="editor-hp"><span class="ruler" /><span class="text" /></div>');
+	t.$editor.append($hpBox);
+	syncHP();
+
 	// generic inputs
 	$.each(t.params, function(param, value) {
 		if($.inArray(param, alreadyDrawn) > -1) {
