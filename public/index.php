@@ -68,7 +68,6 @@ $only_load_once   = !empty($_REQUEST['only_load_once']);
 // select char, press 'd' to damage/heal (with negative number?) with popup asking for a number/dice (buttons for predefined dice for e.g. spells)
 //
 // Character editor:
-// HP/max HP
 // roll table? like 'perception: 5 ok, 10 good, 15 very good' or just 'perception +5'
 
 
@@ -89,6 +88,7 @@ $only_load_once   = !empty($_REQUEST['only_load_once']);
 // adding/removing items
 // moving items between characters
 // (candy) separate modes for editing/viewing so we can see bonuses on stats etc?
+// proper change system where we can react on CON change when character equips a CON+1 ring
 
 
 // CANDY:
