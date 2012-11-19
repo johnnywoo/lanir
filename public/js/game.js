@@ -147,7 +147,7 @@ var Game = function(options) {
 				characters[mapIdToName[id]].$editor.show();
 			}
 
-			if(mapIdToName[prevId]) {
+			if(id != prevId && mapIdToName[prevId]) {
 				characters[mapIdToName[prevId]].$editor.hide();
 			}
 		}
