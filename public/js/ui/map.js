@@ -4,7 +4,7 @@ var Map = function(options) {
 	this.size            = [25, 20]; // cells [horizontal, vertical]
 	this.mapImage        = '';
 	this.movableTokens   = true;
-	this.onmove          = null; // tokenId, place, fromPlace
+	this.onmove          = null; // tokenId, place, fromPlace, distance
 	this.onselect        = null; // tokenId, prevTokenId
 	this.selectedTokenId = null;
 	/** @type {FogOfWar} */
@@ -275,10 +275,11 @@ var Map = function(options) {
 					token.set({counter: ''});
 				},
 				stop: function(dd) {
+					var distance = dd.xArrow.getLength();
 					dd.x$arrowBox && dd.x$arrowBox.remove();
 					token.set({counter: ''});
 
-					t.onmove && t.onmove(tokenId, token.place, dd.xStartPlace);
+					t.onmove && t.onmove(tokenId, token.place, dd.xStartPlace, distance);
 				}
 			});
 		}

@@ -209,7 +209,11 @@ var Game = function(options) {
 			case 'move':
 				var character = characters[entry.name];
 				if(character) {
-					addText(character.name + ' moves');
+					var distance = '';
+					if(entry.distance) {
+						distance = entry.distance + ' step' + (entry.distance > 1 ? 's' : '');
+					}
+					addText(character.name + ' moves ' + distance);
 				}
 				break;
 			case 'set':
@@ -231,12 +235,13 @@ var Game = function(options) {
 		}
 	};
 
-	this.map.onmove = function(tokenId, place, fromPlace) {
+	this.map.onmove = function(tokenId, place, fromPlace, distance) {
 		if(place[0] != fromPlace[0] || place[1] != fromPlace[1]) {
 			t.log.add({
-				command: 'move',
-				name:  mapIdToName[tokenId],
-				place: place.slice(0)
+				command:  'move',
+				name:     mapIdToName[tokenId],
+				place:    place.slice(0),
+				distance: distance
 			});
 		}
 	};

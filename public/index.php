@@ -65,6 +65,7 @@ $only_load_once   = !empty($_REQUEST['only_load_once']);
 // initiative and rounds, who acted this round (with regards to inactive tokens)
 // click target in attack mode: if PC, ask for damage; if NPC, auto roll and set everything
 // select char, press 'd' to damage/heal (with negative number?) with popup asking for a number/dice (buttons for predefined dice for e.g. spells)
+// short rest and full rest
 //
 // Character editor:
 // roll table? like 'perception: 5 ok, 10 good, 15 very good' or just 'perception +5'
