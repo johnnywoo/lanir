@@ -5,8 +5,12 @@ var Game = function(options) {
 	/** @type {Map} */
 	this.map              = null;
 	this.isReadonlyMode   = false;
+	/** @type {jQuery} */
 	this.$mapContainer    = null;
+	/** @type {jQuery} */
 	this.$editorContainer = null;
+	/** @type {jQuery} */
+	this.$logContainer    = null;
 	$.extend(this, options || {});
 
 	var t = this;
@@ -116,7 +120,7 @@ var Game = function(options) {
 		});
 		if(!t.isReadonlyMode) {
 			characters[name].onuichange = function(param, value) {
-				t.log.pushPostFactum({
+				t.log.add({
 					command: 'set',
 					name:    name,
 					param:   param,
@@ -167,7 +171,8 @@ var Game = function(options) {
 	// INSTALLING CALLBACKS
 	//
 
-	this.log.callback = function(entry) {
+	// reacting on changes from the server
+	this.log.onfetch = function(entry) {
 		if(!entry.command) {
 			throw "Strange log entry: " + entry;
 		}
@@ -188,9 +193,47 @@ var Game = function(options) {
 		}
 	};
 
+	// displaying the battle log
+	this.log.onadd = function(entry) {
+		if(!t.$logContainer) {
+			return;
+		}
+
+		var addText = function(text) {
+			t.$logContainer.append($('<div />').text(text));
+			// scroll to the bottom
+			t.$logContainer.scrollTop(t.$logContainer.get(0).scrollHeight);
+		};
+
+		switch(entry.command) {
+			case 'move':
+				var character = characters[entry.name];
+				if(character) {
+					addText(character.name + ' moves');
+				}
+				break;
+			case 'set':
+				var character = characters[entry.name];
+				var m = entry.param.match(/^item__(\d+)__equipped$/);
+				if(character && m) {
+					var item = character.items[m[1]];
+					if(item) {
+						var desc;
+						if(item.isWeapon()) {
+							desc = (entry.value ? ' now wields ' : ' puts away ');
+						} else {
+							desc = (entry.value ? ' equips ' : ' takes off ');
+						}
+						addText(character.name + desc + item.name());
+					}
+				}
+				break;
+		}
+	};
+
 	this.map.onmove = function(tokenId, place, fromPlace) {
 		if(place[0] != fromPlace[0] || place[1] != fromPlace[1]) {
-			t.log.pushPostFactum({
+			t.log.add({
 				command: 'move',
 				name:  mapIdToName[tokenId],
 				place: place.slice(0)

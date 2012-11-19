@@ -1,7 +1,8 @@
 var GameLog = function(options) {
 	this.url      = '';
 	this.entries  = [];
-	this.callback = null; // fires for both push() call and new entries coming from server
+	this.onfetch = null; // function(entry); fires for new entries coming from server
+	this.onadd   = null; // function(entry); fires for any added events, both fetched from server and added locally
 	this.loadInterval = 1; // sec
 	$.extend(this, options || {});
 
@@ -13,17 +14,7 @@ var GameLog = function(options) {
 	// PUBLIC INTERFACE
 	//
 
-	/**
-	 * Adds an entry and runs the callback on it
-	 */
-	this.push = function(entry) {
-		push(entry, t.callback);
-	};
-
-	/**
-	 * Adds an entry without running the callback
-	 */
-	this.pushPostFactum = function(entry) {
+	this.add = function(entry) {
 		push(entry);
 	};
 
@@ -42,6 +33,11 @@ var GameLog = function(options) {
 	// INTESTINES
 	//
 
+	var add = function(entry) {
+		t.entries.push(entry);
+		t.onadd && t.onadd(entry);
+	};
+
 	var load = function() {
 		$.ajax({
 			type:  'POST',
@@ -52,14 +48,14 @@ var GameLog = function(options) {
 			},
 			success: function(entries) {
 				for(var i = 0; i < entries.length; i++) {
-					t.entries.push(entries[i]);
-					t.callback && t.callback(entries[i]);
+					add(entries[i]);
+					t.onfetch && t.onfetch(entries[i]);
 				}
 			}
 		});
 	};
 
-	var push = function(entry, callback) {
+	var push = function(entry) {
 		$.ajax({
 			type:  'POST',
 			url:   t.url,
@@ -69,8 +65,7 @@ var GameLog = function(options) {
 				entry: JSON.stringify(entry)
 			},
 			success: function() {
-				t.entries.push(entry);
-				callback && callback(entry);
+				add(entry);
 			}
 		});
 	};

@@ -63,7 +63,6 @@ $only_load_once   = !empty($_REQUEST['only_load_once']);
 //
 // Battle mode:
 // initiative and rounds, who acted this round (with regards to inactive tokens)
-// battle log
 // click target in attack mode: if PC, ask for damage; if NPC, auto roll and set everything
 // select char, press 'd' to damage/heal (with negative number?) with popup asking for a number/dice (buttons for predefined dice for e.g. spells)
 //
@@ -156,6 +155,7 @@ $(function() {
 		log:              gameLog,
 		$mapContainer:    $('#canvas'),
 		$editorContainer: $('#editor-drawer'),
+		$logContainer:    isReadonlyMode ? null : $('#log-drawer'),
 		isReadonlyMode:   isReadonlyMode
 	});
 
@@ -197,6 +197,11 @@ $(function() {
 <div id="sidebar">
 	<!-- <div id="token-library" class="drawer"></div> -->
 	<div id="editor-drawer" class="drawer"></div>
+
+	<? if(empty($is_readonly_mode)) { ?>
+	<div id="log-drawer" class="drawer"></div>
+	<? } ?>
+
 	<div id="help-drawer" class="drawer">
 		<div class="drawer-title">Tips</div>
 		<button id="centerViewBtn" class="keyboard-shortcut">⌘0</button> Center view<br />
