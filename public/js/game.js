@@ -188,12 +188,14 @@ var Game = function(options) {
 		}
 	};
 
-	this.map.onmove = function(tokenId, place) {
-		t.log.pushPostFactum({
-			command: 'move',
-			name: mapIdToName[tokenId],
-			place: place.slice(0)
-		});
+	this.map.onmove = function(tokenId, place, fromPlace) {
+		if(place[0] != fromPlace[0] || place[1] != fromPlace[1]) {
+			t.log.pushPostFactum({
+				command: 'move',
+				name:  mapIdToName[tokenId],
+				place: place.slice(0)
+			});
+		}
 	};
 
 

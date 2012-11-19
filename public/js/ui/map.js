@@ -4,7 +4,7 @@ var Map = function(options) {
 	this.size            = [25, 20]; // cells [horizontal, vertical]
 	this.mapImage        = '';
 	this.movableTokens   = true;
-	this.onmove          = null; // tokenId, place
+	this.onmove          = null; // tokenId, place, fromPlace
 	this.onselect        = null; // tokenId, prevTokenId
 	this.selectedTokenId = null;
 	/** @type {FogOfWar} */
@@ -278,7 +278,7 @@ var Map = function(options) {
 					dd.x$arrowBox && dd.x$arrowBox.remove();
 					token.set({counter: ''});
 
-					t.onmove && t.onmove(tokenId, token.place);
+					t.onmove && t.onmove(tokenId, token.place, dd.xStartPlace);
 				}
 			});
 		}
