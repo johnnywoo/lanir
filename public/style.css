@@ -75,7 +75,7 @@ z-index levels:
 .drawer {border: 1px gray solid; border-radius: 0.5em; padding: 0.2em; margin: 0.5em 0}
 	.drawer-title {font-weight: bold; margin-bottom: 0.3em}
 
-.keyboard-shortcut {border: 1px silver solid; border-radius: 15%; background: ivory; padding: 0 0.1em; cursor: pointer}
+.keyboard-shortcut {border: 1px silver solid; border-radius: 15%; background: ivory; padding: 0 0.1em; cursor: pointer; min-width: 2.6em}
 	.keyboard-shortcut:hover {background: #e8e8db}
 
 .token-library-cell {display: inline-block; position: relative; font-size: 50px; width: 55px; height: 55px; margin: 3px}

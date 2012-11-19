@@ -180,6 +180,7 @@ $(function() {
 		$(document).bind('keydown', 'f', game.map.fog.toggle);
 
 		// attack mode
+		$('#attackModeBtn').click(game.toggleAttackMode);
 		$(document).bind('keydown', 'a', game.toggleAttackMode);
 	}
 });
@@ -202,6 +203,7 @@ $(function() {
 		<? if(empty($is_readonly_mode)) { ?>
 		<button id="drawFogBtn" class="keyboard-shortcut">⌘F</button> Draw fog of war<br />
 		<button id="showFogBtn" class="keyboard-shortcut">F</button> Show/hide fog of war<br />
+		<button id="attackModeBtn" class="keyboard-shortcut">A</button> Attack mode on/off<br />
 		<? } ?>
 		Right-drag moves the map. <br />
 		Left-drag moves tokens or the map. While moving a token, right click to add a waypoint.
