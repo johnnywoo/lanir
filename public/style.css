@@ -49,7 +49,7 @@ z-index levels:
 		.hp-medium  span {background: #e0b309;}
 		.hp-low     span {background: #e8220f;}
 		.hp-awful   span {background: #7d120b; color: #ff0000;}
-	.token-counter {position: absolute; top: 0; left: 0; width: 100%; height: 100%; text-align: center; display: table-cell; vertical-align: middle}
+	.token-counter {position: absolute; top: 0; left: 0; width: 100%; height: 100%; text-align: center; display: table-cell; vertical-align: middle; opacity: 0.7}
 		.token-counter span {position: absolute; top: 17%; bottom: 17%; left: 10%; right: 10%; font-size: 0.5em; background: ivory; border: 1px black solid; border-radius: 0.35em; color: black; font-family: sans-serif; padding: 0 0.1em;}
 	.token-badges {position: absolute; left: 0; width: 100%; top: 0; height: 0.77em;}
 		.token-badge {float: right; width: 0.33em; height: 0.33em}
