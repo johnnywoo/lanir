@@ -114,6 +114,7 @@ $only_load_once   = !empty($_REQUEST['only_load_once']);
 // drawing condition icons in character editor
 // fix doubleclick not working properly on checkbox labels (it should simply count as two separate clicks and no text selection should take place)
 // make gradient hp coloring instead of discrete colors
+// do not allow healing past max HP
 
 // dealing with multiple tokens on the same square:
 // mark such squares with some icon (how do we deal with big tokens?)
