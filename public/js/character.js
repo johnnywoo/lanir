@@ -113,7 +113,10 @@ var Character = function(options) {
 		return createToken();
 	};
 
-	this.focusHurtInp = function() {
+	this.focusHurtInp = function(value) {
+		if(arguments.length) {
+			$hurtInp.val(value);
+		}
 		$hurtInp.focus().get(0).select();
 	};
 

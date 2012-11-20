@@ -80,8 +80,26 @@ var Game = function(options) {
 		var target   = characters[targetName];
 
 		var weapon = attacker.getCurrentWeapon();
+		/** @type {Damage} */
+		var damage = weapon.get('dmg');
 
-		// for now, we treat PC as NPC
+		if(attacker.isPC()) {
+			// for PCs we assume they rolled a hit if another token was clicked
+			// now we need to:
+			// 1. show the target editor
+			// 2. focus the damage box with our current weapon damage
+
+			attacker.$editor.hide();
+			target.$editor.show();
+
+			setTimeout(function() {
+				target.focusHurtInp(damage.summary());
+			}, 0);
+
+			// now the DM presses enter in the damage box and we go
+			// through character UI code into the onuichange handler below
+			return;
+		}
 
 		var score = attacker.getScoreToHit(target) + 10; // attack = defence -> need to roll 10+ to hit
 		var attackRoll = rollD20();
@@ -101,22 +119,18 @@ var Game = function(options) {
 		}
 
 		var isCriticalHit = (attackRoll == 20);
-
-		// calculating the damage
-		/** @type {Damage} */
-		var damage = weapon.get('dmg');
-		var hit = isCriticalHit ? damage.max() : damage.roll();
-
 		var entry = {
 			command:    'hit',
 			attacker:   attackerName,
 			target:     targetName,
 			roll:       attackRoll,
 			isCritical: isCriticalHit,
-			hit:        hit
+			hit:        isCriticalHit ? damage.max() : damage.roll()
 		};
 		t.log.add(entry);
 		hurt(entry);
+
+		disableAttackMode();
 	};
 
 	var hurt = function(logEntry) {
@@ -187,6 +201,26 @@ var Game = function(options) {
 		});
 		if(!t.isReadonlyMode) {
 			characters[name].onuichange = function(param, value, oldValue) {
+				if(param == 'hp' && isAttackMode) {
+					// damage done while in attack mode should be recorded differently
+					var attackerName = getSelectedCharacterName();
+					t.log.add({
+						command:    'hit',
+						attacker:   attackerName,
+						target:     name,
+						roll:       10,    // unknown
+						isCritical: false, // unknown
+						hit:        oldValue - value
+					});
+
+					// hide the target editor back
+					characters[name].$editor.hide();
+					characters[attackerName].$editor.show();
+
+					disableAttackMode();
+					return;
+				}
+
 				t.log.add({
 					command:  'set',
 					name:     name,
@@ -214,8 +248,6 @@ var Game = function(options) {
 				if(mapIdToName[id] && mapIdToName[prevId]) {
 					attack(mapIdToName[prevId], mapIdToName[id]);
 				}
-
-				disableAttackMode();
 				return false; // cancel dragging/selecting
 			}
 

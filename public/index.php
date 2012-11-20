@@ -38,9 +38,7 @@ $only_load_once   = !empty($_REQUEST['only_load_once']);
 
 // to do
 //
-// describe all characters in one place in game config, use lists of names in other places?
-// think about problems with making actions while log is loading (should not be an issue with one GM and readonly players)
-
+// correct cancellation of PC damage in attack mode (currently two editors can be active and it is generally a mess)
 
 
 // ESSENTIAL:
@@ -63,7 +61,6 @@ $only_load_once   = !empty($_REQUEST['only_load_once']);
 //
 // Battle mode:
 // initiative and rounds, who acted this round (with regards to inactive tokens)
-// click target in attack mode: if PC, ask for damage (with an option for critical)
 // short rest and full rest
 //
 // Character editor:
@@ -94,6 +91,7 @@ $only_load_once   = !empty($_REQUEST['only_load_once']);
 // proper change system where we can react on CON change when character equips a CON+1 ring
 // roll table? like 'perception: 5 ok, 10 good, 15 very good' or just 'perception +5'
 // predefined heal/damage buttons or keywords
+// autocritical option for PC damage
 
 
 // CANDY:
@@ -115,6 +113,7 @@ $only_load_once   = !empty($_REQUEST['only_load_once']);
 // fix doubleclick not working properly on checkbox labels (it should simply count as two separate clicks and no text selection should take place)
 // make gradient hp coloring instead of discrete colors
 // do not allow healing past max HP
+// think about problems with making actions while log is loading (should not be an issue with one GM and readonly players)
 
 // dealing with multiple tokens on the same square:
 // mark such squares with some icon (how do we deal with big tokens?)
