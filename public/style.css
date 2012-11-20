@@ -17,6 +17,8 @@ body {padding-right: 202px}
 .map-grid {position: absolute; height: 100%; width: 100%;}
 .map-grid-cell {position: absolute; width: 1em; height: 1em;}
 
+.fog-of-war {position: absolute;}
+
 /* .map-grid-cell:hover {background: red; opacity: 0.4} hover won't work because we have token layer above the grid */
 /* we can make the border glow properly by trickery:
  * half of the border must be on the outside (border-color)
@@ -34,9 +36,9 @@ z-index levels:
 100 = sidebar
 */
 .map-grid {z-index: 0}
-.fog-of-war {z-index: 3}
 .under-tokens {z-index: 5}
 .token {z-index: 10}
+.fog-of-war {z-index: 20}
 .over-tokens {z-index: 50}
 
 .tokens {position: absolute; height: 100%; width: 100%;}

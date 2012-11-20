@@ -19,12 +19,7 @@ var FogOfWar = function(options) {
 		$canvas.toggle();
 	};
 
-	this.draw = function() {
-		var visibleArea = [];
-		$.each(t.map.getTokens(), function(id, token) {
-			$.merge(visibleArea, token.getVisibleArea());
-		});
-
+	this.draw = function(visibleArea) {
 		var w = t.map.size[0];
 		var h = t.map.size[1];
 

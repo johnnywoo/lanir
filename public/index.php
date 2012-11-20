@@ -181,9 +181,9 @@ $(function() {
 	$(document).bind('keydown', 'ctrl+0 meta+0', normView);
 	if(!isReadonlyMode) {
 		// fog control
-		$('#drawFogBtn').click(game.map.fog.draw);
+		$('#drawFogBtn').click(game.drawFog);
 		$('#showFogBtn').click(game.map.fog.toggle);
-		$(document).bind('keydown', 'ctrl+f meta+f', game.map.fog.draw);
+		$(document).bind('keydown', 'ctrl+f meta+f', game.drawFog);
 		$(document).bind('keydown', 'f', game.map.fog.toggle);
 
 		// attack mode
