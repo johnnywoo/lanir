@@ -13,6 +13,7 @@ var Token = function(options) {
 	var t = this;
 	var visibleArea = [];
 	var badges = [];
+	var hpClass = ''; // to be replaced with name label color
 
 
 
@@ -48,12 +49,9 @@ var Token = function(options) {
 		toggleBadge(name, (arguments.length > 1) ? isEnabled : true);
 	};
 
-	/**
-	 * @param {number} hp
-	 * @param {number} maxHP default 100
-	 */
-	this.setHP = function(hp, maxHP) {
-		setHP(parseInt(100 * hp / ((arguments.length > 1) ? maxHP : 100)));
+	this.setHPClass = function(className) {
+		hpClass = className;
+		t.render();
 	};
 
 
@@ -86,17 +84,6 @@ var Token = function(options) {
 			badges.splice(pos, 1);
 			t.render();
 		}
-	};
-
-	var hpClass = '';
-	var setHP = function(percents) {
-		if(percents > 99)      hpClass = 'hp-max';
-		else if(percents > 50) hpClass = 'hp-high';
-		else if(percents > 20) hpClass = 'hp-medium';
-		else if(percents > 0)  hpClass = 'hp-low';
-		else                   hpClass = 'hp-awful';
-
-		t.render();
 	};
 
 	var move = function(place) {

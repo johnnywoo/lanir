@@ -20,7 +20,7 @@ var DragDrop = function($element, options) {
 	this.currentY = 0;
 
 	// handler rules:
-	// * on drag start, 'start' will be called
+	// * on drag start, 'start' will be called (return false to prevent drag from starting)
 	// * while dragging, 'redraw' will be called
 	// * if there is a 'otherclick' handler and anonther mouse button is pressed while dragging, it will be called
 	// * if ESC is pressed while dragging, 'cancel' will be called; if it's empty, 'stop' will be called instead
@@ -45,7 +45,7 @@ var DragDrop = function($element, options) {
 	// INITIALIZATION
 	//
 
-	var startTracking = function(e) {
+	var initDrag = function(e) {
 		isActive = true;
 		dragStartedMouseButton = e.which;
 
@@ -53,7 +53,9 @@ var DragDrop = function($element, options) {
 		t.startY = e.pageY;
 		t.currentX = e.pageX;
 		t.currentY = e.pageY;
+	};
 
+	var startTracking = function(e) {
 		// we only add the document handlers for the time we're actually dragging
 		// so hopefully the whole drag-drop harness can be destroyed if the element is removed
 		var $doc = $(document);
@@ -137,8 +139,13 @@ var DragDrop = function($element, options) {
 			// drag started! only if a correct button is pressed, of course
 			if($.inArray(e.which, t.mouseButtons) > -1) {
 				e.stopPropagation(); // prevent multiple drags from starting at once
+				initDrag(e);
+				if(t.start && t.start(t) === false) {
+					// nope, we're shutting the whole thing down again
+					isActive = false;
+					return;
+				}
 				startTracking(e);
-				t.start && t.start(t);
 			}
 		} else if(t.otherclick && dragStartedMouseButton != e.which) {
 			// already active = possibility for an otherclick

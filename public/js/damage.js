@@ -33,6 +33,26 @@ var Damage = function(damage) {
 		return s.length ? s.join('+') : '0';
 	};
 
+	this.roll = function() {
+		var hit = t.num;
+		for(var i = 0; i < t.dice.length; i++) {
+			var die = t.dice[i];
+			for(var j = 0; j < die[0]; j++) {
+				hit += Math.floor(Math.random() * die[1]) + 1;
+			}
+		}
+		return hit;
+	};
+
+	this.max = function() {
+		var hit = t.num;
+		for(var i = 0; i < t.dice.length; i++) {
+			var die = t.dice[i];
+			hit += die[0] * die[1];
+		}
+		return hit;
+	};
+
 
 
 	//

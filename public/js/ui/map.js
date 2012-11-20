@@ -5,7 +5,7 @@ var Map = function(options) {
 	this.mapImage        = '';
 	this.movableTokens   = true;
 	this.onmove          = null; // tokenId, place, fromPlace, distance
-	this.onselect        = null; // tokenId, prevTokenId
+	this.onbeforeselect  = null; // tokenId, prevTokenId
 	this.selectedTokenId = null;
 	/** @type {FogOfWar} */
 	this.fog             = null;
@@ -231,7 +231,10 @@ var Map = function(options) {
 			// dragging the token around
 			new DragDrop(token.$box, {
 				start: function(dd) {
-					selectToken(tokenId);
+					if(selectToken(tokenId) === false) {
+						return false; // prevent drag from starting
+					}
+
 					dd.xStartPlace = token.place.slice(0); // clone the array
 					dd.xLastPlace  = token.place.slice(0); // clone the array
 					// we might have grabbed the token not by its top left corner, so let's adjust for it
@@ -244,6 +247,7 @@ var Map = function(options) {
 					arrow.start(dd.xStartPlace);
 					dd.xArrow = arrow;
 
+					return null;
 				},
 				otherclick: function(dd) {
 					dd.xArrow.point(getCellCoordsFromPoint(dd.currentX, dd.currentY, dd.xCorrectionShift));
@@ -312,6 +316,12 @@ var Map = function(options) {
 
 	var selectToken = function(id) {
 		var token = tokens[id];
+		var prevId = t.selectedTokenId;
+
+		// return false from the onselect to cancel selecting
+		if(t.onbeforeselect && t.onbeforeselect(id, prevId) === false) {
+			return false; // we also need to prevent drag from starting
+		}
 
 		token.$box.css({'z-index': maxZIndex + 1});
 		normalizeTokenZIndices();
@@ -320,9 +330,8 @@ var Map = function(options) {
 			tokens[t.selectedTokenId].$box.removeClass('token-selected');
 		}
 		token.$box.addClass('token-selected');
-		var prevId = t.selectedTokenId;
 		t.selectedTokenId = id;
 
-		t.onselect && t.onselect(id, prevId);
+		return null;
 	};
 };

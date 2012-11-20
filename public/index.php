@@ -40,6 +40,7 @@ $only_load_once   = !empty($_REQUEST['only_load_once']);
 //
 // describe all characters in one place in game config, use lists of names in other places?
 // think about problems with making actions while log is loading (should not be an issue with one GM and readonly players)
+// normalize damage/hit/applyHit glossary so it does not confuse people
 
 
 
@@ -63,7 +64,7 @@ $only_load_once   = !empty($_REQUEST['only_load_once']);
 //
 // Battle mode:
 // initiative and rounds, who acted this round (with regards to inactive tokens)
-// click target in attack mode: if PC, ask for damage; if NPC, auto roll and set everything
+// click target in attack mode: if PC, ask for damage (with an option for critical)
 // select char, press 'd' to damage/heal (with negative number?) with popup asking for a number/dice (buttons for predefined dice for e.g. spells)
 // short rest and full rest
 //
@@ -81,6 +82,10 @@ $only_load_once   = !empty($_REQUEST['only_load_once']);
 // General everything features:
 // map changing
 // displaying the log of actions and undo
+// remove all magic numbers
+//
+// Battle mode:
+// after hits, show target condition (is at X/Y HP, is now dead/unconscious)
 //
 // Editors:
 // unique IDs for items instead of char/pos

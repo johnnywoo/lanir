@@ -42,6 +42,10 @@ var Game = function(options) {
 	// IMPLEMENTATION
 	//
 
+	var rollD20 = function() {
+		return Math.floor(Math.random() * 20) + 1;
+	};
+
 	var getSelectedCharacterName = function() {
 		return mapIdToName[t.map.selectedTokenId] || null;
 	};
@@ -60,6 +64,60 @@ var Game = function(options) {
 				character.displayAttack(characters[attackerName]);
 			}
 		});
+	};
+
+	var attack = function(attackerName, targetName) {
+		var attacker = characters[attackerName];
+		var target   = characters[targetName];
+
+		var weapon = attacker.getCurrentWeapon();
+
+		// for now, we treat PC as NPC
+
+		var score = attacker.getScoreToHit(target) + 10; // attack = defence -> need to roll 10+ to hit
+		var attackRoll = rollD20();
+
+		if(attackRoll < score) {
+			// close, but no cigar!
+			var entry = {
+				command:    'miss',
+				attacker:   attackerName,
+				target:     targetName,
+				roll:       attackRoll,
+				isCritical: (attackRoll == 1)
+			};
+			t.log.add(entry);
+			applyMiss(entry);
+			return;
+		}
+
+		var isCriticalHit = (attackRoll == 20);
+
+		// calculating the damage
+		/** @type {Damage} */
+		var damage = weapon.get('dmg');
+		var hit = isCriticalHit ? damage.max() : damage.roll();
+
+		var entry = {
+			command:    'hit',
+			attacker:   attackerName,
+			target:     targetName,
+			roll:       attackRoll,
+			isCritical: isCriticalHit,
+			hit:        hit
+		};
+		t.log.add(entry);
+		applyHit(entry);
+	};
+
+	var applyHit = function(logEntry) {
+		// apply the damage
+		var target = characters[logEntry.target];
+		target.hit(logEntry.hit);
+	};
+
+	var applyMiss = function(logEntry) {
+		// in theory, we might want to react to a critical miss
 	};
 
 
@@ -140,8 +198,16 @@ var Game = function(options) {
 		mapImage:      config.image,
 		movableTokens: !t.isReadonlyMode,
 
-		onselect: function(id, prevId) {
-			disableAttackMode();
+		onbeforeselect: function(id, prevId) {
+			if(isAttackMode) {
+				// inflict tons of damage
+				if(mapIdToName[id] && mapIdToName[prevId]) {
+					attack(mapIdToName[prevId], mapIdToName[id]);
+				}
+
+				disableAttackMode();
+				return false; // cancel dragging/selecting
+			}
 
 			if(mapIdToName[id]) {
 				characters[mapIdToName[id]].$editor.show();
@@ -150,6 +216,8 @@ var Game = function(options) {
 			if(id != prevId && mapIdToName[prevId]) {
 				characters[mapIdToName[prevId]].$editor.hide();
 			}
+
+			return null;
 		}
 	});
 
@@ -177,19 +245,29 @@ var Game = function(options) {
 			throw "Strange log entry: " + entry;
 		}
 
-		if(entry.command == 'move') {
-			// name place
-			var token = characters[entry.name].token;
-			if(token) {
-				token.move(entry.place);
-			}
-		}
+		switch(entry.command) {
+			case 'move':
+				// name place
+				var token = characters[entry.name].token;
+				if(token) {
+					token.move(entry.place);
+				}
+				break;
 
-		if(entry.command == 'set') {
-			var character = characters[entry.name];
-			if(character) {
-				character.set(entry.param, entry.value);
-			}
+			case 'set':
+				var character = characters[entry.name];
+				if(character) {
+					character.set(entry.param, entry.value);
+				}
+				break;
+
+			case 'hit':
+				applyHit(entry);
+				break;
+
+			case 'miss':
+				applyMiss(entry);
+				break;
 		}
 	};
 
@@ -244,6 +322,22 @@ var Game = function(options) {
 					addText(character.name + (entry.value ? ' is ' : ' now is not ') + entry.param);
 				}
 
+				break;
+
+			case 'hit':
+				var attacker = characters[entry.attacker];
+				var target   = characters[entry.target];
+				if(attacker && target) {
+					addText(attacker.name + (entry.isCritical ? ' critically' : '') + ' hits ' + target.name + ' for ' + entry.hit + ' damage');
+				}
+				break;
+
+			case 'miss':
+				var attacker = characters[entry.attacker];
+				var target   = characters[entry.target];
+				if(attacker && target) {
+					addText(attacker.name + (entry.isCritical ? ' critically' : '') + ' misses ' + target.name);
+				}
 				break;
 		}
 	};

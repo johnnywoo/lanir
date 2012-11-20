@@ -76,6 +76,9 @@ var Character = function(options) {
 		addItem(options);
 	};
 
+	/**
+	 * @return {Item}
+	 */
 	this.getCurrentWeapon = function() {
 		return getEquippedWeapon() || t.params.naturalWeapon;
 	};
@@ -89,6 +92,14 @@ var Character = function(options) {
 	 */
 	this.getScoreToHit = function(target) {
 		return getScoreToHit(target);
+	};
+
+	this.hit = function(damage) {
+		hit(damage);
+	};
+
+	this.isPC = function() {
+		return t.params.isPC;
 	};
 
 	/**
@@ -182,6 +193,8 @@ var Character = function(options) {
 	};
 
 	var internalParamChange = function(param, newValue, oldValue) {
+		// the callback happens after the change, so it's ok to assume new value everywhere
+
 		switch(param) {
 			case 'con':
 				var change = 2 * (newValue - oldValue);
@@ -191,10 +204,35 @@ var Character = function(options) {
 				break;
 
 			case 'hp':
+				syncHPDisplay();
+
+				// unconscious/dead
+				var newHP = t.getScore('hp');
+				if(newHP <= 0) {
+					// the bastard died (PCs don't usually die, though)
+					if(!t.params.unconscious && !t.params.dead) {
+						t.change(t.params.isPC ? 'unconscious' : 'dead', true);
+					}
+				} else {
+					// the bastard was resurrected?!
+					t.change('unconscious', false);
+					t.change('dead', false);
+				}
+				break;
+
 			case 'maxHP':
-				syncHP();
+				syncHPDisplay();
 				break;
 		}
+	};
+
+	var hit = function(hit) {
+		if(t.params.dead) {
+			return;
+		}
+
+		var hpChange = -hit;
+		t.change('hp', (hpChange < 0) ? hpChange.toString() : '+' + hpChange);
 	};
 
 
@@ -336,7 +374,7 @@ var Character = function(options) {
 				t.token.toggleBadge(param, t.params[param]);
 			}
 		});
-		syncHP();
+		syncHPDisplay();
 		return t.token;
 	};
 
@@ -354,7 +392,7 @@ var Character = function(options) {
 		changeParam($inp.attr('name'), $inp.is(':checkbox') ? $inp.attr('checked') : $inp.val(), t.onuichange);
 	};
 
-	var syncHP = function() {
+	var syncHPDisplay = function() {
 		var hp    = t.getScore('hp');
 		var maxHP = t.getScore('maxHP');
 
@@ -374,7 +412,7 @@ var Character = function(options) {
 
 		// updating the token
 		if(t.token) {
-			t.token.setHP(hp, maxHP);
+			t.token.setHPClass(hpClass);
 		}
 	};
 
@@ -428,7 +466,7 @@ var Character = function(options) {
 	alreadyDrawn.push('hp', 'maxHP');
 	var $hpBox = $('<div class="editor-hp"><span class="ruler" /><span class="text" /></div>');
 	t.$editor.append($hpBox);
-	syncHP();
+	syncHPDisplay();
 
 	// generic inputs
 	$.each(t.params, function(param, value) {
