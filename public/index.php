@@ -61,6 +61,7 @@ $only_load_once   = !empty($_REQUEST['only_load_once']);
 //
 // Battle mode:
 // initiative and rounds, who acted this round (with regards to inactive tokens)
+// a 'miss' button for PCs in attack mode (spends the round, logs the miss)
 // short rest and full rest
 //
 // Character editor:
