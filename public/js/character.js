@@ -23,12 +23,12 @@ var Character = function(options) {
 		// this weapon will be used if no weapon item is equipped
 		naturalWeapon: new Item({attack: 'melee', dmg: '1d4'}),
 
-		dead: false,
+		dead:        false,
 		unconscious: false,
 
 		inactive: false,
-		ready: true,
-		isPC: false
+		ready:    true,
+		isPC:     false
 	};
 	this.paramsWithBadges = ['dead', 'unconscious'];
 	/** @type {Array.<Item>} */
@@ -72,28 +72,8 @@ var Character = function(options) {
 		changeParam(param, change);
 	};
 
-	this.createToken = function() {
-		t.token = new Token(t.tokenOptions);
-		// init badges
-		$.each(t.paramsWithBadges, function(i, param) {
-			if(t.params[param]) {
-				t.token.toggleBadge(param, t.params[param]);
-			}
-		});
-		syncHP();
-		return t.token;
-	};
-
 	this.addItem = function(options) {
-		var item = new Item(options, t.baseItems);
-
-		// items are autoequipped unless it's a weapon and we have one already equipped
-		if(!item.isWeapon() || !getEquippedWeapon()) {
-			item.set('equipped', true);
-		}
-
-		var id = t.items.push(item) - 1;
-		addItemEditor(id, item);
+		addItem(options);
 	};
 
 	this.getCurrentWeapon = function() {
@@ -108,36 +88,33 @@ var Character = function(options) {
 	 * @param {Character} target
 	 */
 	this.getScoreToHit = function(target) {
-		var weapon = t.getCurrentWeapon();
-		var attackMode = weapon.resolveAttackMode(); // [score-attack score-defence]
-
-		// score to hit is defence minus attack (good attack = lower score; attack = defence -> score 0)
-		return target.getScore(attackMode[1]) - t.getScore(attackMode[0]);
+		return getScoreToHit(target);
 	};
 
 	/**
 	 * @param {Character} attacker
 	 */
 	this.displayAttack = function(attacker) {
-		if(!attacker) {
-			// remove the attack display
-			if(t.token) {
-				t.token.set({counter: ''});
-			}
-			return;
-		}
+		displayAttack(attacker);
+	};
 
-		// display the attack counter
-		if(t.token) {
-			t.token.set({counter: attacker.getScoreToHit(t) + 10}); // if score is 0, you need to roll 10+ to hit
-		}
+	this.createToken = function() {
+		return createToken();
 	};
 
 
 
 	//
-	// IMPLEMENTATION
+	// GAME MECHANICS
 	//
+
+	var getScoreToHit = function(target) {
+		var weapon = t.getCurrentWeapon();
+		var attackMode = weapon.resolveAttackMode(); // [score-attack score-defence]
+
+		// score to hit is defence minus attack (good attack = lower score; attack = defence -> score 0)
+		return target.getScore(attackMode[1]) - t.getScore(attackMode[0]);
+	};
 
 	var getScore = function(name) {
 		var score = 0;
@@ -203,6 +180,29 @@ var Character = function(options) {
 
 		return score;
 	};
+
+	var internalParamChange = function(param, newValue, oldValue) {
+		switch(param) {
+			case 'con':
+				var change = 2 * (newValue - oldValue);
+				change = (change > 0) ? '+' + change : change.toString(); // either '+1' or '-1'
+				t.change('maxHP', change);
+				t.change('hp', change);
+				break;
+
+			case 'hp':
+			case 'maxHP':
+				syncHP();
+				break;
+		}
+	};
+
+
+
+
+	//
+	// PARAM MANAGEMENT
+	//
 
 	var getEquippedWeapon = function() {
 		for(var i = 0; i < t.items.length; i++) {
@@ -294,6 +294,52 @@ var Character = function(options) {
 		}
 	};
 
+	var addItem = function(options) {
+		var item = new Item(options, t.baseItems);
+
+		// items are autoequipped unless it's a weapon and we have one already equipped
+		if(!item.isWeapon() || !getEquippedWeapon()) {
+			item.set('equipped', true);
+		}
+
+		var id = t.items.push(item) - 1;
+		addItemEditor(id, item);
+
+	};
+
+
+
+	//
+	// USER INTERFACE
+	//
+
+	var displayAttack = function(attacker) {
+		if(!attacker) {
+			// remove the attack display
+			if(t.token) {
+				t.token.set({counter: ''});
+			}
+			return;
+		}
+
+		// display the attack counter
+		if(t.token) {
+			t.token.set({counter: attacker.getScoreToHit(t) + 10}); // if score is 0, you need to roll 10+ to hit
+		}
+	};
+
+	var createToken = function() {
+		t.token = new Token(t.tokenOptions);
+		// init badges
+		$.each(t.paramsWithBadges, function(i, param) {
+			if(t.params[param]) {
+				t.token.toggleBadge(param, t.params[param]);
+			}
+		});
+		syncHP();
+		return t.token;
+	};
+
 	var setInputValue = function(param, value) {
 		var $inp = t.$editor.find('[name='+param+']');
 		if(typeof value == 'boolean') {
@@ -306,22 +352,6 @@ var Character = function(options) {
 	var applyChanges = function(inp) {
 		var $inp = $(inp);
 		changeParam($inp.attr('name'), $inp.is(':checkbox') ? $inp.attr('checked') : $inp.val(), t.onuichange);
-	};
-
-	var internalParamChange = function(param, newValue, oldValue) {
-		switch(param) {
-			case 'con':
-				var change = 2 * (newValue - oldValue);
-				change = (change > 0) ? '+' + change : change.toString(); // either '+1' or '-1'
-				t.change('maxHP', change);
-				t.change('hp', change);
-				break;
-
-			case 'hp':
-			case 'maxHP':
-				syncHP();
-				break;
-		}
 	};
 
 	var syncHP = function() {
@@ -375,10 +405,7 @@ var Character = function(options) {
 	// editor title
 	t.$editor.append($('<form class="character-name" />').text(t.name));
 
-	//
-	// PARAM INPUTS
-	//
-
+	// param inputs
 	var alreadyDrawn = ['naturalWeapon'];
 
 	// custom inputs: stats
