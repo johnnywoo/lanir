@@ -40,7 +40,6 @@ $only_load_once   = !empty($_REQUEST['only_load_once']);
 //
 // describe all characters in one place in game config, use lists of names in other places?
 // think about problems with making actions while log is loading (should not be an issue with one GM and readonly players)
-// normalize damage/hit/applyHit glossary so it does not confuse people
 
 
 

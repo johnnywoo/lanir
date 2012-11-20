@@ -94,8 +94,8 @@ var Character = function(options) {
 		return getScoreToHit(target);
 	};
 
-	this.hit = function(damage) {
-		hit(damage);
+	this.hurt = function(hit) {
+		hurt(hit);
 	};
 
 	this.isPC = function() {
@@ -226,7 +226,7 @@ var Character = function(options) {
 		}
 	};
 
-	var hit = function(hit) {
+	var hurt = function(hit) {
 		if(t.params.dead) {
 			return;
 		}

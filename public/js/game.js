@@ -87,7 +87,7 @@ var Game = function(options) {
 				isCritical: (attackRoll == 1)
 			};
 			t.log.add(entry);
-			applyMiss(entry);
+			miss(entry);
 			return;
 		}
 
@@ -107,16 +107,16 @@ var Game = function(options) {
 			hit:        hit
 		};
 		t.log.add(entry);
-		applyHit(entry);
+		hurt(entry);
 	};
 
-	var applyHit = function(logEntry) {
+	var hurt = function(logEntry) {
 		// apply the damage
 		var target = characters[logEntry.target];
-		target.hit(logEntry.hit);
+		target.hurt(logEntry.hit);
 	};
 
-	var applyMiss = function(logEntry) {
+	var miss = function(logEntry) {
 		// in theory, we might want to react to a critical miss
 	};
 
@@ -262,11 +262,11 @@ var Game = function(options) {
 				break;
 
 			case 'hit':
-				applyHit(entry);
+				hurt(entry);
 				break;
 
 			case 'miss':
-				applyMiss(entry);
+				miss(entry);
 				break;
 		}
 	};
