@@ -69,6 +69,7 @@ $only_load_once   = !empty($_REQUEST['only_load_once']);
 //
 // Character editor:
 // roll table? like 'perception: 5 ok, 10 good, 15 very good' or just 'perception +5'
+// needed effects: prone, max-damage, +attack, +dmg, damage (we may just add all those to everyone and have 'turns' param which will set equipped back to 0)
 
 
 // NOT ESSENTIAL:

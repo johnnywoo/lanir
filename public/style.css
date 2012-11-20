@@ -94,12 +94,20 @@ z-index levels:
 	.item-editor.item-is-weapon {border-color: maroon;}
 		.item-editor .item-name {font-weight: bold}
 
-input.number {width: 50px}
+	input.number {width: 50px}
 
-.stats-3column label {display: inline-block; width: 29%; height: 22px; position: relative; margin-right:4%}
-	.stats-3column label span {float: left; width: 32%; line-height: 22px;}
-	.stats-3column input {float: right; width: 20px;}
+	.stats-3column label {display: inline-block; width: 29%; height: 22px; position: relative; margin-right:4%}
+		.stats-3column label span {float: left; width: 32%; line-height: 22px;}
+		.stats-3column input {float: right; width: 20px;}
 
-.editor-hp {border: 1px black solid; border-radius: 0.3em; position: relative; height: 1.3em; font-size: 120%; font-weight: bold}
-	.editor-hp .ruler {position: absolute; left: 0; top: 0; bottom: 0}
-	.editor-hp .text {position: absolute; width: 100%; text-align: center; display: block; background: transparent !important;}
+	.editor-character-stats {display: none}
+	.show-character-stats .editor-character-stats {display: block}
+	.show-character-stats .show-character-stats-link {display: none}
+
+	.editor-hp {border: 1px black solid; border-radius: 0.3em; position: relative; height: 1.3em; font-size: 120%; font-weight: bold}
+		.editor-hp .ruler {position: absolute; left: 0; top: 0; bottom: 0}
+		.editor-hp .text {position: absolute; width: 100%; text-align: center; display: block; background: transparent !important;}
+
+	.show-character-stats-link, .stats-3column > div {margin-bottom: 0.3em}
+
+.js-link {text-decoration: none; border-bottom: 1px dotted}

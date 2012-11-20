@@ -384,14 +384,16 @@ var Character = function(options) {
 	// custom inputs: stats
 	alreadyDrawn.push('str', 'dex', 'con', 'int', 'wis', 'cha');
 	t.$editor.append(
-		'<div class="stats-3column">'
-		// fortitude, reflex, will
-		+ '<label><span>STR</span> <input type="text" name="str" /></label>'
-		+ '<label><span>DEX</span> <input type="text" name="dex" /></label>'
-		+ '<label><span>WIS</span> <input type="text" name="wis" /></label>'
-		+ '<label><span>CON</span> <input type="text" name="con" /></label>'
-		+ '<label><span>INT</span> <input type="text" name="int" /></label>'
-		+ '<label><span>CHA</span> <input type="text" name="cha" /></label>'
+		'<div class="show-character-stats-link"><a href="" class="js-link" onclick="$(\'body\').addClass(\'show-character-stats\'); return false">Show stats<br /></a></div>'
+		+ '<div class="stats-3column editor-character-stats">'
+			+ '<div><a href="" class="js-link" onclick="$(\'body\').removeClass(\'show-character-stats\'); return false">Hide stats</a></div>'
+			// fortitude, reflex, will
+			+ '<label><span>STR</span> <input type="text" name="str" /></label>'
+			+ '<label><span>DEX</span> <input type="text" name="dex" /></label>'
+			+ '<label><span>WIS</span> <input type="text" name="wis" /></label>'
+			+ '<label><span>CON</span> <input type="text" name="con" /></label>'
+			+ '<label><span>INT</span> <input type="text" name="int" /></label>'
+			+ '<label><span>CHA</span> <input type="text" name="cha" /></label>'
 		+ '</div>'
 	);
 
