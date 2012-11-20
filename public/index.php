@@ -64,11 +64,9 @@ $only_load_once   = !empty($_REQUEST['only_load_once']);
 // Battle mode:
 // initiative and rounds, who acted this round (with regards to inactive tokens)
 // click target in attack mode: if PC, ask for damage (with an option for critical)
-// select char, press 'd' to damage/heal (with negative number?) with popup asking for a number/dice (buttons for predefined dice for e.g. spells)
 // short rest and full rest
 //
 // Character editor:
-// roll table? like 'perception: 5 ok, 10 good, 15 very good' or just 'perception +5'
 // needed effects: prone, max-damage, +attack, +dmg, damage (we may just add all those to everyone and have 'turns' param which will set equipped back to 0)
 
 
@@ -94,6 +92,8 @@ $only_load_once   = !empty($_REQUEST['only_load_once']);
 // moving items between characters
 // (candy) separate modes for editing/viewing so we can see bonuses on stats etc?
 // proper change system where we can react on CON change when character equips a CON+1 ring
+// roll table? like 'perception: 5 ok, 10 good, 15 very good' or just 'perception +5'
+// predefined heal/damage buttons or keywords
 
 
 // CANDY:
@@ -188,6 +188,13 @@ $(function() {
 		// attack mode
 		$('#attackModeBtn').click(game.toggleAttackMode);
 		$(document).bind('keydown', 'a', game.toggleAttackMode);
+
+		// damage box
+		$('#damageModeBtn').click(game.toggleDamageMode);
+		$(document).bind('keydown', 'd', function(e) {
+			game.toggleDamageMode();
+			e.preventDefault(); // do not type 'd' into the box
+		});
 	}
 });
 
@@ -215,6 +222,7 @@ $(function() {
 		<button id="drawFogBtn" class="keyboard-shortcut">⌘F</button> Draw fog of war<br />
 		<button id="showFogBtn" class="keyboard-shortcut">F</button> Show/hide fog of war<br />
 		<button id="attackModeBtn" class="keyboard-shortcut">A</button> Attack mode on/off<br />
+		<button id="damageModeBtn" class="keyboard-shortcut">D</button> Focus the damage box<br />
 		<? } ?>
 		Right-drag moves the map. <br />
 		Left-drag moves tokens or the map. While moving a token, right click to add a waypoint.

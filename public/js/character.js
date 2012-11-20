@@ -113,6 +113,10 @@ var Character = function(options) {
 		return createToken();
 	};
 
+	this.focusHurtInp = function() {
+		$hurtInp.focus().get(0).select();
+	};
+
 
 
 	//
@@ -416,6 +420,22 @@ var Character = function(options) {
 		}
 	};
 
+	var hurtInpEnter = function() {
+		// manual damage input
+		var value = $hurtInp.val();
+		var hit;
+		if(value.match(/^-?\d+$/)) {
+			hit = parseInt(value);
+		} else {
+			var damage = new Damage(value);
+			hit = damage.roll();
+		}
+
+		var hpChange = -hit;
+		var change = (hpChange < 0) ? hpChange.toString() : '+' + hpChange;
+		changeParam('hp', change, t.onuichange);
+	};
+
 
 
 	//
@@ -467,6 +487,29 @@ var Character = function(options) {
 	var $hpBox = $('<div class="editor-hp"><span class="ruler" /><span class="text" /></div>');
 	t.$editor.append($hpBox);
 	syncHPDisplay();
+
+	// damage controls
+	var $hurtInp = $('<input type="text" class="number" name="hurt" />');
+	$hurtInp
+		.keyup(function(e) {
+			if(e.which == 13) { // enter
+				e.stopPropagation();
+				hurtInpEnter();
+				e.target.select();
+			}
+
+			if(e.which == 27) { // esc
+				// lose the focus so global keyboard shortcuts work again
+				e.target.blur();
+			}
+		})
+		.change(function(e) {
+			e.stopPropagation();
+		});
+	t.$editor.append(
+		$('<div class="editor-damage">Damage: </div>')
+			.append($hurtInp)
+	);
 
 	// generic inputs
 	$.each(t.params, function(param, value) {

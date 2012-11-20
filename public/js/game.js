@@ -36,6 +36,15 @@ var Game = function(options) {
 		}
 	};
 
+	this.toggleDamageMode = function() {
+		disableAttackMode();
+
+		var name = getSelectedCharacterName();
+		if(name) {
+			characters[name].focusHurtInp();
+		}
+	};
+
 
 
 	//
@@ -177,12 +186,13 @@ var Game = function(options) {
 			characters[name].addItem(item);
 		});
 		if(!t.isReadonlyMode) {
-			characters[name].onuichange = function(param, value) {
+			characters[name].onuichange = function(param, value, oldValue) {
 				t.log.add({
-					command: 'set',
-					name:    name,
-					param:   param,
-					value:   value
+					command:  'set',
+					name:     name,
+					param:    param,
+					value:    value,
+					oldValue: oldValue
 				});
 			}
 		}
@@ -320,6 +330,19 @@ var Game = function(options) {
 				// general boolean params
 				if(typeof entry.value == 'boolean') {
 					addText(character.name + (entry.value ? ' is ' : ' now is not ') + entry.param);
+					break;
+				}
+
+				// damage/heal
+				if(entry.param == 'hp') {
+					var diff = entry.value - entry.oldValue;
+					if(diff > 0) {
+						addText(character.name + ' heals ' + diff + ' HP');
+					}
+					if(diff < 0) {
+						addText(character.name + ' receives ' + (-diff) + ' damage');
+					}
+					break;
 				}
 
 				break;
