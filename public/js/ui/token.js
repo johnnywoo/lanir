@@ -66,7 +66,7 @@ var Token = function(options) {
 		var h = t.place[1];
 		for(var x = w - t.range; x <= w + t.range; x++) {
 			for(var y = h - t.range; y <= h + t.range; y++) {
-				if((Math.pow(w - x, 2) + Math.pow(h - y, 2)) <= Math.pow(t.range, 2)) {
+				if(x >= 0 && y >= 0) {
 					visibleArea.push(x + '_' + y);
 				}
 			}

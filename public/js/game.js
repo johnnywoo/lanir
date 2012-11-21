@@ -15,7 +15,7 @@ var Game = function(options) {
 
 	var t = this;
 	var isAttackMode = false;
-
+	var visibleArea = [];
 
 
 	//
@@ -44,6 +44,28 @@ var Game = function(options) {
 			characters[name].focusHurtInp();
 		}
 	};
+
+	this.drawFog = function() {
+		var oldVisibleArea = visibleArea.slice(0);
+		var diffVisibleArea = [];
+		$.each(characters, function(name, character) {
+			if(character.isPC()) {
+				addVisibleArea(character.token.getVisibleArea());
+			}
+		});
+		$.each(visibleArea, function(id, coords) {
+			if($.inArray(coords, oldVisibleArea) == -1) {
+				diffVisibleArea.push(coords);
+			}
+		});
+		if(diffVisibleArea.length) {
+			t.log.add({
+				command: 'addVisibleArea',
+				area:    diffVisibleArea
+			});
+		}
+		t.map.fog.draw(visibleArea);
+	}
 
 
 
@@ -142,6 +164,14 @@ var Game = function(options) {
 	var miss = function(logEntry) {
 		// in theory, we might want to react to a critical miss
 	};
+
+	var addVisibleArea = function(area) {
+		$.each(area, function(id, coords) {
+			if($.inArray(coords, visibleArea) == -1) {
+				visibleArea.push(coords);
+			}
+		});
+	}
 
 
 
@@ -310,6 +340,11 @@ var Game = function(options) {
 			case 'miss':
 				miss(entry);
 				break;
+
+			case 'addVisibleArea':
+				addVisibleArea(entry.area);
+				t.map.fog.draw(visibleArea);
+				break;
 		}
 	};
 
@@ -408,7 +443,9 @@ var Game = function(options) {
 		}
 	};
 
-
+	if(t.isReadonlyMode) {
+		t.map.fog.draw(visibleArea);
+	}
 
 	//
 	// GO GO GO!
