@@ -106,6 +106,9 @@ var Game = function(options) {
 			return;
 		}
 
+		// NPC = full auto attack
+		disableAttackMode();
+
 		var score = attacker.getScoreToHit(target) + 10; // attack = defence -> need to roll 10+ to hit
 		var attackRoll = rollD20();
 
@@ -134,8 +137,6 @@ var Game = function(options) {
 		};
 		t.log.add(entry);
 		hurt(entry);
-
-		disableAttackMode();
 	};
 
 	var hurt = function(logEntry) {
