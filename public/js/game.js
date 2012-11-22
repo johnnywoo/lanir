@@ -350,7 +350,7 @@ var Game = function(options) {
 		}
 
 		var addText = function(text, className) {
-			t.$logContainer.append($('<div />').addClass(className || 'log-entry-battle').text(text));
+			t.$logContainer.append($('<div />').addClass(className || '').text(text));
 			// scroll to the bottom
 			t.$logContainer.scrollTop(t.$logContainer.get(0).scrollHeight);
 		};
@@ -399,10 +399,10 @@ var Game = function(options) {
 				if(entry.param == 'hp') {
 					var diff = entry.value - entry.oldValue;
 					if(diff > 0) {
-						addText(character.name + ' heals ' + diff + ' HP');
+						addText(character.name + ' heals ' + diff + ' HP', 'log-entry-heal');
 					}
 					if(diff < 0) {
-						addText(character.name + ' receives ' + (-diff) + ' damage');
+						addText(character.name + ' receives ' + (-diff) + ' damage', 'log-entry-damage');
 					}
 					break;
 				}
@@ -413,7 +413,7 @@ var Game = function(options) {
 				var attacker = characters[entry.attacker];
 				var target   = characters[entry.target];
 				if(attacker && target) {
-					addText(attacker.name + (entry.isCritical ? ' critically' : '') + ' hits ' + target.name + ' for ' + entry.hit + ' damage');
+					addText(attacker.name + (entry.isCritical ? ' critically' : '') + ' hits ' + target.name + ' for ' + entry.hit + ' damage', 'log-entry-hit');
 				}
 				break;
 
@@ -421,7 +421,7 @@ var Game = function(options) {
 				var attacker = characters[entry.attacker];
 				var target   = characters[entry.target];
 				if(attacker && target) {
-					addText(attacker.name + (entry.isCritical ? ' critically' : '') + ' misses ' + target.name);
+					addText(attacker.name + (entry.isCritical ? ' critically' : '') + ' misses ' + target.name, 'log-entry-miss');
 				}
 				break;
 
