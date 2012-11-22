@@ -1,8 +1,8 @@
 var GameLog = function(options) {
-	this.url      = '';
-	this.entries  = [];
-	this.onfetch = null; // function(entry); fires for new entries coming from server
-	this.onadd   = null; // function(entry); fires for any added events, both fetched from server and added locally
+	this.url          = '';
+	this.entries      = [];
+	this.onfetch      = null; // function(entry); fires for new entries coming from server
+	this.onadd        = null; // function(entry); fires for any added events, both fetched from server and added locally
 	this.loadInterval = 1; // sec
 	$.extend(this, options || {});
 
@@ -40,8 +40,8 @@ var GameLog = function(options) {
 
 	var load = function() {
 		$.ajax({
-			type:  'POST',
-			url:   t.url,
+			type: 'POST',
+			url:  t.url,
 			data: {
 				command: 'get',
 				skip:    t.entries.length
