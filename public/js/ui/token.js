@@ -6,12 +6,10 @@ var Token = function(options) {
 	this.name    = '';
 	this.text    = '';
 	this.counter = '';
-	this.range   = 3;
 	this.color   = '#004108'; // green
 	$.extend(this, options || {});
 
 	var t = this;
-	var visibleArea = [];
 	var badges = [];
 	var hpClass = ''; // to be replaced with name label color
 
@@ -38,13 +36,6 @@ var Token = function(options) {
 		this.$box.remove();
 	};
 
-	this.getVisibleArea = function() {
-		if(!visibleArea.length) {
-			calculateVisibleArea();
-		}
-		return visibleArea;
-	};
-
 	this.toggleBadge = function(name, isEnabled) {
 		toggleBadge(name, (arguments.length > 1) ? isEnabled : true);
 	};
@@ -59,19 +50,6 @@ var Token = function(options) {
 	//
 	// INITIALIZATION
 	//
-
-	var calculateVisibleArea = function() {
-		visibleArea = [];
-		var w = t.place[0];
-		var h = t.place[1];
-		for(var x = w - t.range; x <= w + t.range; x++) {
-			for(var y = h - t.range; y <= h + t.range; y++) {
-				if(x >= 0 && y >= 0) {
-					visibleArea.push(x + '_' + y);
-				}
-			}
-		}
-	};
 
 	var toggleBadge = function(name, isEnabled) {
 		var pos = $.inArray(name, badges);
@@ -92,7 +70,6 @@ var Token = function(options) {
 			left:   place[0] + 'em',
 			top:    place[1] + 'em'
 		});
-		calculateVisibleArea();
 	};
 
 	var setTokenStyle = function($box, options) {

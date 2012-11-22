@@ -46,16 +46,6 @@ $only_load_once   = !empty($_REQUEST['only_load_once']);
 // General map features:
 // dealing with multiple tokens on the same square
 //
-// Fog of war:
-// proper dnd trigonometry
-// remembering previously seen places
-// tokens hidden under the fog
-// sync of fog refreshing on server
-// black map before first refresh
-// only count PCs as seeing tokens
-// prevent page search from popping up on ctrl+f
-// remove visibility calculation from the fog object; make it accept a callback to calculate currently visible cells, so the game logic would not be present in the universal fog object
-//
 // General everything features:
 // real-time remote pointer
 //
@@ -76,7 +66,7 @@ $only_load_once   = !empty($_REQUEST['only_load_once']);
 //
 // General everything features:
 // map changing
-// displaying the log of actions and undo
+// undo in battle log
 // remove all magic numbers
 //
 // Battle mode:
@@ -115,6 +105,7 @@ $only_load_once   = !empty($_REQUEST['only_load_once']);
 // make gradient hp coloring instead of discrete colors
 // do not allow healing past max HP
 // think about problems with making actions while log is loading (should not be an issue with one GM and readonly players)
+// when fog of war is visible, adjust z-index so visible tokens are still clickable
 
 // dealing with multiple tokens on the same square:
 // mark such squares with some icon (how do we deal with big tokens?)
@@ -183,7 +174,10 @@ $(function() {
 		// fog control
 		$('#drawFogBtn').click(game.drawFog);
 		$('#showFogBtn').click(game.map.fog.toggle);
-		$(document).bind('keydown', 'ctrl+f meta+f', game.drawFog);
+		$(document).bind('keydown', 'ctrl+f meta+f', function(e) {
+			game.drawFog();
+			e.preventDefault(); // do not open page search
+		});
 		$(document).bind('keydown', 'f', game.map.fog.toggle);
 
 		// attack mode

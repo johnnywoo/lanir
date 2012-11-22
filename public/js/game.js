@@ -15,7 +15,6 @@ var Game = function(options) {
 
 	var t = this;
 	var isAttackMode = false;
-	var visibleArea = [];
 
 
 	//
@@ -46,26 +45,10 @@ var Game = function(options) {
 	};
 
 	this.drawFog = function() {
-		var oldVisibleArea = visibleArea.slice(0);
-		var diffVisibleArea = [];
-		$.each(characters, function(name, character) {
-			if(character.isPC()) {
-				addVisibleArea(character.token.getVisibleArea());
-			}
-		});
-		$.each(visibleArea, function(id, coords) {
-			if($.inArray(coords, oldVisibleArea) == -1) {
-				diffVisibleArea.push(coords);
-			}
-		});
-		if(diffVisibleArea.length) {
-			t.log.add({
-				command: 'addVisibleArea',
-				area:    diffVisibleArea
-			});
-		}
-		t.map.fog.draw(visibleArea);
-	}
+		t.log.add({command: 'fog'});
+		refreshFog();
+		t.map.fog.show();
+	};
 
 
 
@@ -165,13 +148,25 @@ var Game = function(options) {
 		// in theory, we might want to react to a critical miss
 	};
 
-	var addVisibleArea = function(area) {
-		$.each(area, function(id, coords) {
-			if($.inArray(coords, visibleArea) == -1) {
-				visibleArea.push(coords);
+
+
+	//
+	// FOG OF WAR
+	//
+
+	var visibleArea = [];
+	var refreshFog = function() {
+		$.each(characters, function(name, character) {
+			if(character.isPC()) {
+				$.each(character.getVisibleArea(), function(id, coords) {
+					if($.inArray(coords, visibleArea) == -1) {
+						visibleArea.push(coords);
+					}
+				});
 			}
 		});
-	}
+		t.map.fog.draw(visibleArea);
+	};
 
 
 
@@ -341,9 +336,8 @@ var Game = function(options) {
 				miss(entry);
 				break;
 
-			case 'addVisibleArea':
-				addVisibleArea(entry.area);
-				t.map.fog.draw(visibleArea);
+			case 'fog':
+				refreshFog();
 				break;
 		}
 	};
@@ -354,8 +348,8 @@ var Game = function(options) {
 			return;
 		}
 
-		var addText = function(text) {
-			t.$logContainer.append($('<div />').text(text));
+		var addText = function(text, className) {
+			t.$logContainer.append($('<div />').addClass(className || 'log-entry-battle').text(text));
 			// scroll to the bottom
 			t.$logContainer.scrollTop(t.$logContainer.get(0).scrollHeight);
 		};
@@ -368,7 +362,7 @@ var Game = function(options) {
 					if(entry.distance) {
 						distance = entry.distance + ' step' + (entry.distance > 1 ? 's' : '');
 					}
-					addText(character.name + ' moves ' + distance);
+					addText(character.name + ' moves ' + distance, 'log-entry-move');
 				}
 				break;
 
@@ -428,6 +422,10 @@ var Game = function(options) {
 				if(attacker && target) {
 					addText(attacker.name + (entry.isCritical ? ' critically' : '') + ' misses ' + target.name);
 				}
+				break;
+
+			case 'fog':
+				addText('Fog of war was refreshed', 'log-entry-fog-of-war');
 				break;
 		}
 	};

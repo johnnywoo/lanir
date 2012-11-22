@@ -19,6 +19,10 @@ var FogOfWar = function(options) {
 		$canvas.toggle();
 	};
 
+	this.show = function() {
+		$canvas.show();
+	};
+
 	this.draw = function(visibleArea) {
 		var w = t.map.size[0];
 		var h = t.map.size[1];
@@ -56,4 +60,7 @@ var FogOfWar = function(options) {
 	var $canvas = $('<canvas class="fog-of-war" />');
 	this.$container.append($canvas);
 	var ctx = $canvas[0].getContext('2d');
+
+	t.draw([]); // black screen on init
+	t.show();
 };

@@ -38,7 +38,7 @@ z-index levels:
 .map-grid {z-index: 0}
 .under-tokens {z-index: 5}
 .token {z-index: 10}
-.fog-of-war {z-index: 20}
+.fog-of-war {z-index: 49}
 .over-tokens {z-index: 50}
 
 .tokens {position: absolute; height: 100%; width: 100%;}
@@ -78,6 +78,9 @@ z-index levels:
 	.drawer-title {font-weight: bold; margin-bottom: 0.3em}
 
 #log-drawer {max-height: 200px; overflow: auto}
+	#log-drawer .log-entry-battle {}
+	#log-drawer .log-entry-move {color: maroon}
+	#log-drawer .log-entry-fog-of-war {color: gray}
 
 .keyboard-shortcut {border: 1px silver solid; border-radius: 15%; background: ivory; padding: 0 0.1em; cursor: pointer; min-width: 2.6em}
 	.keyboard-shortcut:hover {background: #e8e8db}

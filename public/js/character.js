@@ -28,7 +28,9 @@ var Character = function(options) {
 
 		inactive: false,
 		ready:    true,
-		isPC:     false
+		isPC:     false,
+
+		visionRange: 3
 	};
 	this.paramsWithBadges = ['dead', 'unconscious'];
 	/** @type {Array.<Item>} */
@@ -96,6 +98,10 @@ var Character = function(options) {
 
 	this.hurt = function(hit) {
 		hurt(hit);
+	};
+
+	this.getVisibleArea = function() {
+		return calculateVisibleArea();
 	};
 
 	this.isPC = function() {
@@ -242,6 +248,21 @@ var Character = function(options) {
 		t.change('hp', (hpChange < 0) ? hpChange.toString() : '+' + hpChange);
 	};
 
+	var calculateVisibleArea = function() {
+		var visibleArea = [];
+		if(t.token) {
+			var w = t.token.place[0];
+			var h = t.token.place[1];
+			var range = t.getScore('visionRange');
+			// basically vision range is a square with radius of visionRange around our token
+			for(var x = w - range; x <= w + range; x++) {
+				for(var y = h - range; y <= h + range; y++) {
+					visibleArea.push(x + '_' + y);
+				}
+			}
+		}
+		return visibleArea;
+	};
 
 
 
@@ -467,7 +488,7 @@ var Character = function(options) {
 	t.$editor.append($('<form class="character-name" />').text(t.name));
 
 	// param inputs
-	var alreadyDrawn = ['naturalWeapon'];
+	var alreadyDrawn = ['naturalWeapon', 'visionRange'];
 
 	// custom inputs: stats
 	alreadyDrawn.push('str', 'dex', 'con', 'int', 'wis', 'cha');
