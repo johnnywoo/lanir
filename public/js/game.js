@@ -442,9 +442,7 @@ var Game = function(options) {
 		}
 	};
 
-	if(t.isReadonlyMode) {
-		t.map.fog.draw(visibleArea);
-	}
+
 
 	//
 	// GO GO GO!
