@@ -39,6 +39,8 @@ $only_load_once   = !empty($_REQUEST['only_load_once']);
 // to do
 //
 // correct cancellation of PC damage in attack mode (currently two editors can be active and it is generally a mess)
+// a token for 'inactive'
+// a token for 'ready'?
 
 
 // ESSENTIAL:
@@ -50,8 +52,8 @@ $only_load_once   = !empty($_REQUEST['only_load_once']);
 // real-time remote pointer
 //
 // Battle mode:
-// initiative and rounds, who acted this round (with regards to inactive tokens)
-// a 'miss' button for PCs in attack mode (spends the round, logs the miss)
+// initiative and rounds, who acted this turn (with regards to inactive tokens)
+// a 'miss' button for PCs in attack mode (spends the turn, logs the miss)
 // short rest and full rest
 //
 // Character editor:
@@ -153,6 +155,7 @@ $(function() {
 		log:              gameLog,
 		$mapContainer:    $('#canvas'),
 		$editorContainer: $('#editor-drawer'),
+		$turnsContainer:  isReadonlyMode ? null : $('#turns-drawer'),
 		$logContainer:    isReadonlyMode ? null : $('#log-drawer'),
 		isReadonlyMode:   isReadonlyMode
 	});
@@ -190,6 +193,10 @@ $(function() {
 			game.toggleDamageMode();
 			e.preventDefault(); // do not type 'd' into the box
 		});
+
+		// turns
+		$(document).bind('keydown', 't', game.nextTurn);
+		$('#nextTurnHelpBtn').click(game.nextTurn);
 	}
 });
 
@@ -207,17 +214,18 @@ $(function() {
 	<div id="editor-drawer" class="drawer"></div>
 
 	<? if(empty($is_readonly_mode)) { ?>
+	<div id="turns-drawer" class="drawer"></div>
 	<div id="log-drawer" class="drawer"></div>
 	<? } ?>
 
 	<div id="help-drawer" class="drawer">
-		<div class="drawer-title">Tips</div>
 		<button id="centerViewBtn" class="keyboard-shortcut">⌘0</button> Center view<br />
 		<? if(empty($is_readonly_mode)) { ?>
 		<button id="drawFogBtn" class="keyboard-shortcut">⌘F</button> Draw fog of war<br />
 		<button id="showFogBtn" class="keyboard-shortcut">F</button> Show/hide fog of war<br />
 		<button id="attackModeBtn" class="keyboard-shortcut">A</button> Attack mode on/off<br />
 		<button id="damageModeBtn" class="keyboard-shortcut">D</button> Focus the damage box<br />
+		<button id="nextTurnHelpBtn" class="keyboard-shortcut">T</button> Next turn<br />
 		<? } ?>
 		Right-drag moves the map. <br />
 		Left-drag moves tokens or the map. While moving a token, right click to add a waypoint.

@@ -84,6 +84,8 @@ z-index levels:
 	#log-drawer .log-entry-miss       {color: #ca0000}
 	#log-drawer .log-entry-damage     {color: #e8220f}
 	#log-drawer .log-entry-heal       {color: green}
+	#log-drawer .log-entry-toggle-turns {background: #a8daa6; border: white 1px solid; border-radius: 0.5em; text-align: center}
+	#log-drawer .log-entry-turn       {background: #bbf2b9; border: white 1px solid; border-radius: 0.5em; text-align: center}
 
 .keyboard-shortcut {border: 1px silver solid; border-radius: 15%; background: ivory; padding: 0 0.1em; cursor: pointer; min-width: 2.6em}
 	.keyboard-shortcut:hover {background: #e8e8db}
@@ -121,3 +123,8 @@ z-index levels:
 	.editor-damage {margin-top: 0.3em}
 
 .js-link {text-decoration: none; border-bottom: 1px dotted}
+
+#turns-drawer {position: relative}
+	.turns-toggle {position: absolute; left: 0.3em; top: 0.3em}
+	.current-turn {text-align: center; font-size: 1.5em; display: block; height: 1.3em}
+	.turns-next {position: absolute; right: 0.3em; top: 0.3em}

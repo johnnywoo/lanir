@@ -10,6 +10,8 @@ var Game = function(options) {
 	/** @type {jQuery} */
 	this.$editorContainer = null;
 	/** @type {jQuery} */
+	this.$turnsContainer = null;
+	/** @type {jQuery} */
 	this.$logContainer    = null;
 	$.extend(this, options || {});
 
@@ -48,6 +50,10 @@ var Game = function(options) {
 		t.log.add({command: 'fog'});
 		refreshFog();
 		t.map.fog.show();
+	};
+
+	this.nextTurn = function() {
+		nextTurnUI();
 	};
 
 
@@ -167,6 +173,48 @@ var Game = function(options) {
 			}
 		});
 		t.map.fog.draw(visibleArea);
+	};
+
+
+
+	//
+	// TURNS
+	//
+
+	var getCurrentTurnNumber = function() {
+		return parseInt($currentTurn.text()) || 0;
+	};
+
+	var setCurrentTurnNumber = function(n) {
+		return $currentTurn.text(n || '');
+	};
+
+	var toggleTurns = function() {
+		var turn = getCurrentTurnNumber();
+		if(turn) {
+			// end of battle
+			$nextTurnBtn.attr('disabled', true);
+			$toggleTurnsBtn.text('Start turns');
+			setCurrentTurnNumber();
+		} else {
+			// start of battle
+			$nextTurnBtn.attr('disabled', false);
+			$toggleTurnsBtn.text('End turns');
+			nextTurn();
+		}
+
+		return !turn;
+	};
+
+	var nextTurn = function() {
+		setCurrentTurnNumber(getCurrentTurnNumber() + 1);
+	};
+
+	var nextTurnUI = function() {
+		if(getCurrentTurnNumber()) {
+			nextTurn();
+			t.log.add({command: 'turn'});
+		}
 	};
 
 
@@ -301,6 +349,23 @@ var Game = function(options) {
 		character.$editor.hide();
 	});
 
+	// turn buttons
+	var $toggleTurnsBtn = $('<button class="turns-toggle">Start turns</button>');
+	var $currentTurn    = $('<span class="current-turn" />');
+	var $nextTurnBtn    = $('<button class="turns-next" disabled="disabled">Next turn</button>');
+	t.$turnsContainer
+		.append($toggleTurnsBtn)
+		.append($currentTurn)
+		.append($nextTurnBtn);
+
+	$toggleTurnsBtn.click(function() {
+		var enabled = toggleTurns();
+		t.log.add({
+			command: 'toggle-turns',
+			enabled: enabled
+		});
+	});
+	$nextTurnBtn.click(nextTurnUI);
 
 
 	//
@@ -339,6 +404,14 @@ var Game = function(options) {
 
 			case 'fog':
 				refreshFog();
+				break;
+
+			case 'toggle-turns':
+				toggleTurns();
+				break;
+
+			case 'turn':
+				nextTurn();
 				break;
 		}
 	};
@@ -427,6 +500,17 @@ var Game = function(options) {
 
 			case 'fog':
 				addText('Fog of war was refreshed', 'log-entry-fog-of-war');
+				break;
+
+			case 'toggle-turns':
+				addText(entry.enabled ? 'Turn-based all up in here!' : 'Huzzah! We did it!', 'log-entry-toggle-turns');
+				if(entry.enabled) {
+					addText('Turn 1', 'log-entry-turn');
+				}
+				break;
+
+			case 'turn':
+				addText('Turn ' + getCurrentTurnNumber(), 'log-entry-turn');
 				break;
 		}
 	};
