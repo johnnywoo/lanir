@@ -78,14 +78,14 @@ z-index levels:
 	.drawer-title {font-weight: bold; margin-bottom: 0.3em}
 
 #log-drawer {max-height: 300px; overflow: auto}
-	#log-drawer .log-entry-move       {color: blue}
-	#log-drawer .log-entry-fog-of-war {color: gray}
-	#log-drawer .log-entry-hit        {color: #ca0000}
-	#log-drawer .log-entry-miss       {color: #ca0000}
-	#log-drawer .log-entry-damage     {color: #e8220f}
-	#log-drawer .log-entry-heal       {color: green}
+	#log-drawer .log-entry-move         {color: blue}
+	#log-drawer .log-entry-fog-of-war   {color: gray}
+	#log-drawer .log-entry-hit          {color: #ca0000}
+	#log-drawer .log-entry-miss         {color: #ca0000}
+	#log-drawer .log-entry-damage       {color: #e8220f}
+	#log-drawer .log-entry-heal         {color: green}
 	#log-drawer .log-entry-toggle-turns {background: #a8daa6; border: white 1px solid; border-radius: 0.5em; text-align: center}
-	#log-drawer .log-entry-turn       {background: #bbf2b9; border: white 1px solid; border-radius: 0.5em; text-align: center}
+	#log-drawer .log-entry-turn         {background: #bbf2b9; border: white 1px solid; border-radius: 0.5em; text-align: center}
 
 .keyboard-shortcut {border: 1px silver solid; border-radius: 15%; background: ivory; padding: 0 0.1em; cursor: pointer; min-width: 2.6em}
 	.keyboard-shortcut:hover {background: #e8e8db}
