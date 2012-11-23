@@ -5,7 +5,9 @@ var FogOfWar = function(options) {
 	this.map        = null;
 	$.extend(this, options || {});
 
-	var size = 100; // this is essentially graphics quality; actual onscreen size is managed by css (1 em = 1 cell)
+	// this is essentially graphics quality; actual onscreen size is managed by css (1 em = 1 cell)
+	// setting size to 1 produces awesome blurring of the fog
+	var size = 1;
 
 	var t = this;
 
