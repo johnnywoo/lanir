@@ -385,10 +385,12 @@ var Game = function(options) {
 	var $toggleTurnsBtn = $('<button class="turns-toggle">Start turns</button>');
 	var $currentTurn    = $('<span class="current-turn" />');
 	var $nextTurnBtn    = $('<button class="turns-next" disabled="disabled">Next turn</button>');
-	t.$turnsContainer
-		.append($toggleTurnsBtn)
-		.append($currentTurn)
-		.append($nextTurnBtn);
+	if(t.$turnsContainer) {
+		t.$turnsContainer
+			.append($toggleTurnsBtn)
+			.append($currentTurn)
+			.append($nextTurnBtn);
+	}
 
 	$toggleTurnsBtn.click(function() {
 		var enabled = toggleTurns();
