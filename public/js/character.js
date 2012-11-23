@@ -244,6 +244,11 @@ var Character = function(options) {
 			case 'maxHP':
 				syncHPDisplay();
 				break;
+
+			case 'dead':
+			case 'unconscious':
+				t.set('ready', false);
+				break;
 		}
 	};
 
