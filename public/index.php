@@ -52,8 +52,6 @@ $only_load_once   = !empty($_REQUEST['only_load_once']);
 // real-time remote pointer
 //
 // Battle mode:
-// initiative and rounds, who acted this turn (with regards to inactive tokens)
-// a 'miss' button for PCs in attack mode (spends the turn, logs the miss)
 // short rest and full rest
 //
 // Character editor:
