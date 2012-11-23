@@ -27,12 +27,12 @@ var Character = function(options) {
 		unconscious: false,
 
 		inactive: false,
-		ready:    true,
+		ready:    false,
 		isPC:     false,
 
 		visionRange: 3
 	};
-	this.paramsWithBadges = ['dead', 'unconscious'];
+	this.paramsWithBadges = ['dead', 'unconscious', 'ready'];
 	/** @type {Array.<Item>} */
 	this.items = [];
 
@@ -45,6 +45,10 @@ var Character = function(options) {
 	//
 	// PUBLIC INTERFACE
 	//
+
+	this.get = function(param) {
+		return t.params[param];
+	};
 
 	/**
 	 * Sets a new value for a character param
@@ -106,6 +110,10 @@ var Character = function(options) {
 
 	this.isPC = function() {
 		return t.params.isPC;
+	};
+
+	this.isActive = function() {
+		return !t.params.inactive && !t.params.unconscious && !t.params.dead;
 	};
 
 	/**

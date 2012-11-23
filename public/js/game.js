@@ -114,6 +114,7 @@ var Game = function(options) {
 
 		// NPC = full auto attack
 		disableAttackMode();
+		attacker.set('ready', false);
 
 		var score = attacker.getScoreToHit(target) + 10; // attack = defence -> need to roll 10+ to hit
 		var attackRoll = rollD20();
@@ -149,10 +150,13 @@ var Game = function(options) {
 		// apply the damage
 		var target = characters[logEntry.target];
 		target.hurt(logEntry.hit);
+		// spend the turn for attacker
+		characters[logEntry.attacker].set('ready', false);
 	};
 
 	var miss = function(logEntry) {
-		// in theory, we might want to react to a critical miss
+		// spend the turn for attacker
+		characters[logEntry.attacker].set('ready', false);
 	};
 
 
@@ -196,6 +200,11 @@ var Game = function(options) {
 			$nextTurnBtn.attr('disabled', true);
 			$toggleTurnsBtn.text('Start turns');
 			setCurrentTurnNumber();
+
+			// removing 'ready' from everyone
+			$.each(characters, function(name, character) {
+				character.set('ready', false);
+			});
 		} else {
 			// start of battle
 			$nextTurnBtn.attr('disabled', false);
@@ -208,6 +217,13 @@ var Game = function(options) {
 
 	var nextTurn = function() {
 		setCurrentTurnNumber(getCurrentTurnNumber() + 1);
+
+		// everyone is ready (except inactive characters)
+		$.each(characters, function(name, character) {
+			if(character.isActive()) {
+				character.set('ready', true);
+			}
+		});
 	};
 
 	var nextTurnUI = function() {
@@ -292,6 +308,22 @@ var Game = function(options) {
 					characters[attackerName].$editor.show();
 
 					disableAttackMode();
+					characters[attackerName].set('ready', false);
+					return;
+				}
+
+				if(param == 'ready' && isAttackMode) {
+					// not ready while in attack mode = miss
+					t.log.add({
+						command:    'miss',
+						attacker:   name,
+						target:     name, // unknown
+						roll:       10,   // unknown
+						isCritical: false // unknown
+					});
+
+					disableAttackMode();
+					characters[name].set('ready', false);
 					return;
 				}
 
@@ -494,7 +526,7 @@ var Game = function(options) {
 				var attacker = characters[entry.attacker];
 				var target   = characters[entry.target];
 				if(attacker && target) {
-					addText(attacker.name + (entry.isCritical ? ' critically' : '') + ' misses ' + target.name, 'log-entry-miss');
+					addText(attacker.name + (entry.isCritical ? ' critically' : '') + ' misses ' + (entry.attacker == entry.target ? '' : target.name), 'log-entry-miss');
 				}
 				break;
 

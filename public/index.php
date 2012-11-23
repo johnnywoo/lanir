@@ -227,8 +227,9 @@ $(function() {
 		<button id="damageModeBtn" class="keyboard-shortcut">D</button> Focus the damage box<br />
 		<button id="nextTurnHelpBtn" class="keyboard-shortcut">T</button> Next turn<br />
 		<? } ?>
-		Right-drag moves the map. <br />
-		Left-drag moves tokens or the map. While moving a token, right click to add a waypoint.
+		Right-drag moves the map.<br />
+		Left-drag moves tokens or the map. While moving a token, right click to add a waypoint.<br />
+		In attack mode: click other token to attack, uncheck 'ready' to miss.
 </div>
 </div>
 
