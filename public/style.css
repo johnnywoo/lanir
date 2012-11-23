@@ -124,7 +124,7 @@ z-index levels:
 
 .js-link {text-decoration: none; border-bottom: 1px dotted}
 
-#turns-drawer {position: relative}
+#turns-drawer {position: relative; border: none}
 	.turns-toggle {position: absolute; left: 0.3em; top: 0.3em}
 	.current-turn {text-align: center; font-size: 1.5em; display: block; height: 1.3em}
 	.turns-next {position: absolute; right: 0.3em; top: 0.3em}
