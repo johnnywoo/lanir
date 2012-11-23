@@ -585,14 +585,13 @@ var Character = function(options) {
 		$itemsBox.append(
 			$('<div class="item-editor" />')
 				.toggleClass('item-is-weapon', item.isWeapon())
-				.append($('<span class="item-name" />').text(item.name()))
-				.append(' ')
-				.append($('<span class="item-summary" />').text(item.summary()))
-				.append($('<div />').append(
+				.append(
 					$('<label />')
 						.append($('<input type="checkbox" />').attr('name', inputName))
-						.append(' equipped')
-				))
+						.append($('<span class="item-name" />').text(item.name()))
+						.append(' ')
+						.append($('<span class="item-summary" />').text(item.summary()))
+				)
 		);
 		// setting input values
 		setInputValue(inputName, item.get('equipped'));
