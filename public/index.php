@@ -53,7 +53,7 @@ $only_load_once   = !empty($_REQUEST['only_load_once']);
 // short rest and full rest
 //
 // Character editor:
-// needed effects: prone, max-damage, +attack, +dmg, damage (we may just add all those to everyone and have 'turns' param which will set equipped back to 0)
+// needed effects: max-damage, +attack, +dmg, damage (we may just add all those to everyone and have 'turns' param which will set equipped back to 0)
 
 
 // NOT ESSENTIAL:

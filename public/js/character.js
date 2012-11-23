@@ -25,6 +25,7 @@ var Character = function(options) {
 
 		dead:        false,
 		unconscious: false,
+		prone:       false,
 
 		inactive: false,
 		ready:    false,
@@ -32,7 +33,7 @@ var Character = function(options) {
 
 		visionRange: 3
 	};
-	this.paramsWithBadges = ['dead', 'unconscious', 'ready'];
+	this.paramsWithBadges = ['dead', 'unconscious', 'ready', 'prone'];
 	/** @type {Array.<Item>} */
 	this.items = [];
 
