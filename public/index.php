@@ -39,8 +39,6 @@ $only_load_once   = !empty($_REQUEST['only_load_once']);
 // to do
 //
 // correct cancellation of PC damage in attack mode (currently two editors can be active and it is generally a mess)
-// a token for 'inactive'
-// a token for 'ready'?
 
 
 // ESSENTIAL:
